@@ -1,0 +1,17 @@
+Hesabdari Asan Native v4 Phase 4 - SQLite Stress Test
+
+Products: 5,000
+Invoices: 12,000
+Invoice items: 36,000
+Expenses: 3,500
+Purchases: 2,501
+
+PRAGMA quick_check: OK
+Phase3 -> Phase4 schema migration: OK
+Purchase stock/debt invariant: OK
+Cash invoice cancellation stock reversal: OK
+Invoice edit stock/total invariant: OK
+Credit invoice cancellation debt reversal: OK
+
+Detailed timings are stored in TEST_REPORT.json.
+Note: this is a SQLite/domain stress test in the current Linux environment, not a Windows WPF compile/runtime test.
