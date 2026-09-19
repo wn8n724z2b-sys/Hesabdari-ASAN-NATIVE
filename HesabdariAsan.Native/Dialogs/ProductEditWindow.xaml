@@ -1,0 +1,31 @@
+<Window x:Class="HesabdariAsan.Native.Dialogs.ProductEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="کالا" Width="560" Height="620" ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
+        FlowDirection="RightToLeft" Background="{DynamicResource AppBackground}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Border Margin="18" Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock x:Name="TitleText" Text="کالای جدید" FontSize="21" FontWeight="Bold" Margin="0,0,0,18"/>
+                <TextBlock Text="نام کالا" Style="{StaticResource SmallMuted}"/><TextBox x:Name="NameBox" Style="{StaticResource Input}" Margin="0,5,0,12"/>
+                <TextBlock Text="بارکد" Style="{StaticResource SmallMuted}"/><TextBox x:Name="BarcodeBox" Style="{StaticResource Input}" FlowDirection="LeftToRight" Margin="0,5,0,12"/>
+                <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="0,0,6,0"><TextBlock Text="دسته" Style="{StaticResource SmallMuted}"/><TextBox x:Name="CategoryBox" Style="{StaticResource Input}" Margin="0,5,0,0"/></StackPanel>
+                    <StackPanel Grid.Column="1" Margin="6,0,0,0"><TextBlock Text="واحد" Style="{StaticResource SmallMuted}"/><TextBox x:Name="UnitBox" Style="{StaticResource Input}" Margin="0,5,0,0"/></StackPanel>
+                </Grid>
+                <Grid Margin="0,0,0,12"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="0,0,6,0"><TextBlock Text="قیمت خرید" Style="{StaticResource SmallMuted}"/><TextBox x:Name="PurchaseBox" Style="{StaticResource Input}" FlowDirection="LeftToRight" Margin="0,5,0,0"/></StackPanel>
+                    <StackPanel Grid.Column="1" Margin="6,0,0,0"><TextBlock Text="قیمت فروش" Style="{StaticResource SmallMuted}"/><TextBox x:Name="SaleBox" Style="{StaticResource Input}" FlowDirection="LeftToRight" Margin="0,5,0,0"/></StackPanel>
+                </Grid>
+                <Grid Margin="0,0,0,18"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="0,0,6,0"><TextBlock Text="موجودی" Style="{StaticResource SmallMuted}"/><TextBox x:Name="StockBox" Style="{StaticResource Input}" FlowDirection="LeftToRight" Margin="0,5,0,0"/></StackPanel>
+                    <StackPanel Grid.Column="1" Margin="6,0,0,0"><TextBlock Text="حداقل موجودی" Style="{StaticResource SmallMuted}"/><TextBox x:Name="MinStockBox" Style="{StaticResource Input}" FlowDirection="LeftToRight" Margin="0,5,0,0"/></StackPanel>
+                </Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button Content="انصراف" Width="96" Style="{StaticResource SecondaryButton}" Margin="6,0" Click="Cancel_Click"/>
+                    <Button Content="ذخیره" Width="110" Style="{StaticResource PrimaryButton}" Margin="6,0" Click="Save_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </ScrollViewer>
+</Window>
