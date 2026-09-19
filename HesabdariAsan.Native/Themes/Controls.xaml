@@ -126,8 +126,6 @@
         <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
         <Setter Property="RowBackground" Value="{DynamicResource Surface}" />
         <Setter Property="AlternatingRowBackground" Value="{DynamicResource SoftSurface}" />
-        <Setter Property="RowHeight" Value="Auto" />
-        <Setter Property="ColumnHeaderHeight" Value="Auto" />
         <Setter Property="EnableRowVirtualization" Value="True" />
         <Setter Property="EnableColumnVirtualization" Value="True" />
         <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
