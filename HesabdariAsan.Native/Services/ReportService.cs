@@ -8,7 +8,7 @@ public sealed class ReportService
     public IReadOnlyList<DailyFinancePoint> GetDailyTrend(int days=14)
     {
         days=Math.Clamp(days,7,90);var start=DateTime.Today.AddDays(-(days-1));
-        var map=Enumerable.Range(0,days).ToDictionary(i=>start.AddDays(i).Date,d=>new DailyFinancePoint{Date=d});
+        var map=Enumerable.Range(0,days).ToDictionary(i=>start.AddDays(i).Date,d=>new DailyFinancePoint{Date=start.AddDays(d).Date});
         using var db=Database.Open();
         void Fill(string sql,Action<DailyFinancePoint,long> set)
         {
