@@ -1,34 +1,27 @@
-حسابداری آسان Native v4 — WebView Parity RC1
-Version: 4.0.0-rc.2
+حسابداری آسان Native v4.1 — Performance RC1
+Version: 4.1.0-rc.1
 
-مرجع مستقیم UI/UX: سورس نهایی WebView v3.4 کاربر
-- dist/app.css
-- dist/index.html
-- dist/app.js
+مرجع UI/UX: WebView v3.4
+وضعیت Native Parity:
+[OK] Light/Dark + RTL + Sidebar + Topbar + Global Search
+[OK] Dashboard + KPI + chart + recent invoices
+[OK] POS + barcode Raw Input + customer picker + payment selection
+[OK] Products + multiple barcodes + unit conversion + images
+[OK] Customers/Companies + debt settlement
+[OK] Categories / Purchases / Expenses / Inventory
+[OK] Reports + period filters + financial summaries + CSV
+[OK] Invoice archive + print/edit/cancel
+[OK] Audit + Data Support + Backup/Restore + v3.4 migration
+[OK] First-run + admin security + full reset with safety backup
+[OK] Smooth scrolling + page motion + themed native dialogs
 
-وضعیت Parity:
-[OK] Light/Dark palette
-[OK] RTL / Sidebar / Topbar / Global Search
-[OK] Vector icons
-[OK] Dashboard + 5 KPI + chart + recent invoices + quick actions
-[OK] POS / barcode / customer picker / mandatory payment selection
-[OK] Products / multiple barcodes / producer / image / unit conversion
-[OK] Customers + Companies + debt settlement
-[OK] Categories
-[OK] Expenses
-[OK] Inventory + manual stock adjustment + ledger
-[OK] Reports filters + 5 KPI + multi-series chart + financial summary
-[OK] Invoice archive + items quantity + print/edit/cancel
-[OK] Financial period lifecycle
-[OK] Excel-compatible CSV export
-[OK] Data Support / backup / restore / v3.4 migration / database health
-[OK] Full data reset with safety backup
-[OK] First-run onboarding + admin password
-[OK] Light page motion (fade + 7px translate) and button press behavior
-[OK] Exit confirmation + backup
-[OK] Free-version badge + clickable MNRAHIMI footer
+Performance v4.1:
+[OK] SQLite schema v7 and engine tuning
+[OK] Composite hot-path indexes
+[OK] Indexed barcode lookup
+[OK] Debounced UI searches
+[OK] Data-engine diagnostics + Optimize/WAL checkpoint
+[OK] 100k/1m/3m representative SQLite benchmark, quick_check=ok
 
 Static validation: PASS
-SQLite/accounting formula validation: PASS
-SQLite quick_check: OK
-Real Windows WPF build: must pass GitHub Actions before Production Final label.
+Real Windows WPF compile: GitHub Actions gate before Production Final.
