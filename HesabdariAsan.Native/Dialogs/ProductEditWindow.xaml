@@ -1,0 +1,71 @@
+<Window x:Class="HesabdariAsan.Native.Dialogs.ProductEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="کالا" Width="860" Height="820" MinWidth="780" MinHeight="700"
+        WindowStartupLocation="CenterOwner" FlowDirection="RightToLeft" Background="{DynamicResource AppBackground}">
+    <Grid>
+        <Border Style="{StaticResource DialogCard}" Padding="0">
+            <Grid>
+                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                <Border Padding="22,19" BorderBrush="{DynamicResource Border}" BorderThickness="0,0,0,1">
+                    <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel><TextBlock Text="مدیریت کالا" Style="{StaticResource Eyebrow}"/><TextBlock x:Name="TitleText" Text="کالای جدید" Style="{StaticResource DialogTitle}"/><TextBlock Text="همان ساختار WebView: تصویر، شرکت، تبدیل واحد و چند بارکد" Style="{StaticResource SmallMuted}"/></StackPanel>
+                        <Border Grid.Column="1" Width="48" Height="48" CornerRadius="14" Background="{DynamicResource AccentSoft}"><Viewbox Width="23" Height="23"><Path Data="{StaticResource IconBox}" Stroke="{DynamicResource Accent}" StrokeThickness="1.8" Fill="Transparent"/></Viewbox></Border>
+                    </Grid>
+                </Border>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="22,18,22,14">
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="170"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <Border Width="160" Height="160" CornerRadius="15" Background="{DynamicResource SoftSurface}" BorderBrush="{DynamicResource Border}" BorderThickness="1">
+                                    <Grid ClipToBounds="True"><Viewbox Width="42" Height="42"><Path Data="{StaticResource IconBox}" Stroke="{DynamicResource Muted}" StrokeThickness="1.5" Fill="Transparent"/></Viewbox><Image x:Name="ProductImage" Stretch="UniformToFill"/></Grid>
+                                </Border>
+                                <Button Content="انتخاب عکس" Click="ChooseImage_Click" Style="{StaticResource SecondaryButton}" Margin="0,8,10,0"/>
+                                <Button Content="حذف عکس" Click="RemoveImage_Click" Style="{StaticResource LinkButton}" Foreground="{DynamicResource Danger}" Margin="0,3,10,0"/>
+                            </StackPanel>
+                            <Grid Grid.Column="1" Margin="14,0,0,0">
+                                <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                <StackPanel Grid.Row="0" Grid.ColumnSpan="2"><TextBlock Text="نام کالا" Style="{StaticResource FieldLabel}"/><TextBox x:Name="NameBox" Style="{StaticResource Input}"/></StackPanel>
+                                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,10,0,0"><TextBlock Text="شرکت تولیدکننده (اختیاری)" Style="{StaticResource FieldLabel}"/><TextBox x:Name="ProducerBox" Style="{StaticResource Input}" ToolTip="مثلاً برند یا شرکت تولیدکننده"/></StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,10,6,0"><TextBlock Text="دسته‌بندی" Style="{StaticResource FieldLabel}"/><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="86"/></Grid.ColumnDefinitions><ComboBox x:Name="CategoryBox" Style="{StaticResource Combo}" IsEditable="True"/><Button Grid.Column="1" Content="+ دسته" Click="QuickAddCategory_Click" Style="{StaticResource SecondaryButton}" Margin="6,0,0,0"/></Grid></StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="1" Margin="6,10,0,0"><TextBlock Text="قیمت فروش هر واحد" Style="{StaticResource FieldLabel}"/><TextBox x:Name="SaleBox" Style="{StaticResource Input}" FlowDirection="LeftToRight" TextAlignment="Left"/></StackPanel>
+                                <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,10,6,0"><TextBlock Text="موجودی فعلی" Style="{StaticResource FieldLabel}"/><TextBox x:Name="StockBox" Style="{StaticResource Input}" FlowDirection="LeftToRight" TextAlignment="Left"/></StackPanel>
+                                <StackPanel Grid.Row="3" Grid.Column="1" Margin="6,10,0,0"><TextBlock Text="حداقل موجودی" Style="{StaticResource FieldLabel}"/><TextBox x:Name="MinStockBox" Style="{StaticResource Input}" FlowDirection="LeftToRight" TextAlignment="Left"/></StackPanel>
+                            </Grid>
+                        </Grid>
+
+                        <Border Style="{StaticResource Card}" Effect="{x:Null}" Margin="0,18,0,0">
+                            <StackPanel>
+                                <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="تبدیل واحد خرید و فروش" Style="{StaticResource SectionTitle}"/><TextBlock Text="برای کالاهایی که جعبه/بسته خریده و دانه‌ای می‌فروشید." Style="{StaticResource SmallMuted}" Margin="0,3,0,0"/></StackPanel><CheckBox x:Name="ConversionCheck" Grid.Column="1" Style="{StaticResource SwitchCheckBox}" Checked="ConversionCheck_Changed" Unchecked="ConversionCheck_Changed"/></Grid>
+                                <Grid x:Name="SimpleUnitBox" Margin="0,14,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel Margin="0,0,6,0"><TextBlock Text="واحد کالا" Style="{StaticResource FieldLabel}"/><ComboBox x:Name="SimpleUnitBoxCombo" Style="{StaticResource Combo}"/></StackPanel><StackPanel Grid.Column="1" Margin="6,0,0,0"><TextBlock Text="قیمت خرید هر واحد" Style="{StaticResource FieldLabel}"/><TextBox x:Name="PurchaseBox" Style="{StaticResource Input}" FlowDirection="LeftToRight" TextAlignment="Left"/></StackPanel></Grid>
+                                <Grid x:Name="ConversionUnitBox" Visibility="Collapsed" Margin="0,14,0,0">
+                                    <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                    <StackPanel Margin="0,0,6,0"><TextBlock Text="واحد فروش" Style="{StaticResource FieldLabel}"/><ComboBox x:Name="BaseUnitBox" Style="{StaticResource Combo}" SelectionChanged="ConversionValue_Changed"/></StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="6,0,0,0"><TextBlock Text="واحد خرید" Style="{StaticResource FieldLabel}"/><ComboBox x:Name="PurchaseUnitBox" Style="{StaticResource Combo}"/></StackPanel>
+                                    <StackPanel Grid.Row="1" Margin="0,10,6,0"><TextBlock Text="تعداد داخل هر واحد خرید" Style="{StaticResource FieldLabel}"/><TextBox x:Name="UnitsPerPurchaseBox" Style="{StaticResource Input}" TextChanged="ConversionValue_Changed" FlowDirection="LeftToRight" TextAlignment="Left"/></StackPanel>
+                                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="6,10,0,0"><TextBlock Text="قیمت خرید یک واحد خرید" Style="{StaticResource FieldLabel}"/><TextBox x:Name="PackageBuyPriceBox" Style="{StaticResource Input}" TextChanged="ConversionValue_Changed" FlowDirection="LeftToRight" TextAlignment="Left"/></StackPanel>
+                                    <Border Grid.Row="2" Grid.ColumnSpan="2" Background="{DynamicResource AccentSoft}" CornerRadius="10" Padding="12" Margin="0,12,0,0"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="بهای محاسبه‌شده هر واحد" Foreground="{DynamicResource Accent}"/><TextBlock x:Name="UnitFormulaText" Text="قیمت خرید ÷ تعداد داخل واحد خرید" Style="{StaticResource SmallMuted}"/></StackPanel><TextBlock x:Name="UnitCostPreview" Grid.Column="1" Text="0 ؋" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource Accent}" VerticalAlignment="Center" FlowDirection="LeftToRight"/></Grid></Border>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Style="{StaticResource Card}" Effect="{x:Null}" Margin="0,14,0,0">
+                            <StackPanel>
+                                <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="بارکدهای کالا" Style="{StaticResource SectionTitle}"/><TextBlock Text="بارکد اول، بارکد اصلی است. حداکثر 15 بارکد." Style="{StaticResource SmallMuted}" Margin="0,3,0,0"/></StackPanel><Button Grid.Column="1" Content="+ افزودن بارکد" Click="AddBarcode_Click" Style="{StaticResource SecondaryButton}"/></Grid>
+                                <StackPanel x:Name="BarcodePanel" Margin="0,12,0,0"/>
+                                <TextBlock x:Name="BarcodeCountText" Text="0 از 15 بارکد" Style="{StaticResource SmallMuted}" HorizontalAlignment="Left" Margin="0,6,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Border Grid.Row="2" Padding="22,14" BorderBrush="{DynamicResource Border}" BorderThickness="0,1,0,0">
+                    <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock x:Name="ValidationText" Foreground="{DynamicResource Danger}" VerticalAlignment="Center" TextWrapping="Wrap"/><Button Grid.Column="1" Content="انصراف" Click="Cancel_Click" Style="{StaticResource SecondaryButton}" Width="96" Margin="0,0,8,0"/><Button Grid.Column="2" Content="ذخیره" Click="Save_Click" Style="{StaticResource PrimaryButton}" Width="118"/></Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
