@@ -1,5 +1,5 @@
 حسابداری آسان Native v4 — WebView Parity RC1
-Version: 4.0.0-rc.1
+Version: 4.0.0-rc.2
 
 مرجع مستقیم UI/UX: سورس نهایی WebView v3.4 کاربر
 - dist/app.css

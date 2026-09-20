@@ -89,7 +89,7 @@ public partial class ProductEditWindow : Window
         var w = new CategoryEditWindow { Owner = this };
         if (w.ShowDialog() != true) return;
         try { _categories.Add(w.CategoryName); ReloadCategories(); CategoryBox.Text = w.CategoryName; }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "دسته", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "دسته", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void ConversionCheck_Changed(object sender, RoutedEventArgs e) { if (_loaded) { UpdateUnitMode(); UpdateConversionPreview(); } }

@@ -28,7 +28,7 @@ public partial class InvoiceEditWindow : Window
     private void Save_Click(object sender, RoutedEventArgs e)
     {
         try { _service.SaveEdit(Invoice); DialogResult = true; }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "ویرایش فاکتور", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "ویرایش فاکتور", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
     private void Cancel_Click(object sender, RoutedEventArgs e) => DialogResult = false;
 }

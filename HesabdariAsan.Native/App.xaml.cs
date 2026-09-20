@@ -82,7 +82,7 @@ public partial class App : Application
             AppLog.Error(ex, "Startup");
             if (!IsSmokeTest)
             {
-                MessageBox.Show(
+                AppDialog.Show(
                     "برنامه هنگام شروع با خطا روبه‌رو شد.\n\n" + ex.Message +
                     "\n\nگزارش خطا در پوشه Logs ذخیره شده است.",
                     "حسابداری آسان", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -103,7 +103,7 @@ public partial class App : Application
             return;
         }
 
-        MessageBox.Show(
+        AppDialog.Show(
             "یک خطای غیرمنتظره رخ داد و در Log ثبت شد.\n\n" + e.Exception.Message,
             "حسابداری آسان", MessageBoxButton.OK, MessageBoxImage.Error);
     }

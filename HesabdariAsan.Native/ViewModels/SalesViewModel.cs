@@ -30,13 +30,13 @@ public sealed class SalesViewModel : ViewModelBase
 
     public string ProductSearch { get => _productSearch; set { if (Set(ref _productSearch, value)) ReloadProducts(); } }
     public string CustomerSearch { get => _customerSearch; set { if (Set(ref _customerSearch, value)) ReloadCustomers(); } }
-    public string PaymentText { get => _paymentText; set { if (Set(ref _paymentText, value)) { OnPropertyChanged(nameof(IsCash)); OnPropertyChanged(nameof(IsCredit)); OnPropertyChanged(nameof(PaymentRequired)); } } }
+    public string PaymentText { get => _paymentText; set { if (Set(ref _paymentText, value)) { OnPropertyChanged(nameof(IsCash)); OnPropertyChanged(nameof(IsCredit)); OnPropertyChanged(nameof(PaymentRequired)); CheckoutCommand?.RaiseCanExecuteChanged(); } } }
     public bool IsCash => PaymentText == "نقدی";
     public bool IsCredit => PaymentText == "نسیه";
     public bool PaymentRequired => string.IsNullOrWhiteSpace(PaymentText);
     public string DiscountText { get => _discountText; set { if (Set(ref _discountText, value)) OnPropertyChanged(nameof(TotalText)); } }
-    public bool IsProductResultsOpen { get => _isProductResultsOpen; private set => Set(ref _isProductResultsOpen, value); }
-    public bool IsCustomerResultsOpen { get => _isCustomerResultsOpen; private set => Set(ref _isCustomerResultsOpen, value); }
+    public bool IsProductResultsOpen { get => _isProductResultsOpen; set => Set(ref _isProductResultsOpen, value); }
+    public bool IsCustomerResultsOpen { get => _isCustomerResultsOpen; set => Set(ref _isCustomerResultsOpen, value); }
     public bool IsCustomerPickerOpen { get => _isCustomerPickerOpen; set { if (Set(ref _isCustomerPickerOpen, value) && !value) { CustomerSearch = ""; CustomerResults.Clear(); IsCustomerResultsOpen = false; } } }
     public Party? SelectedCustomer { get => _selectedCustomer; private set { if (Set(ref _selectedCustomer, value)) OnPropertyChanged(nameof(SelectedCustomerText)); } }
     public string SelectedCustomerText => SelectedCustomer?.Name ?? "مشتری عمومی";
@@ -71,7 +71,7 @@ public sealed class SalesViewModel : ViewModelBase
         DecreaseCommand = new RelayCommand(x => ChangeQty(x as CartItem, -1), x => x is CartItem);
         RemoveCommand = new RelayCommand(x => Remove(x as CartItem), x => x is CartItem);
         SelectCustomerCommand = new RelayCommand(x => SelectCustomer(x as Party), x => x is Party);
-        CheckoutCommand = new RelayCommand(_ => Checkout());
+        CheckoutCommand = new RelayCommand(_ => Checkout(), _ => Cart.Count > 0 && !PaymentRequired);
         PrintLastCommand = new RelayCommand(_ => PrintLast(), _ => _lastInvoiceNo.HasValue);
         PrintInvoiceCommand = new RelayCommand(x => PrintInvoice(x as InvoiceSummary), x => x is InvoiceSummary);
         SetPaymentCommand = new RelayCommand(x => PaymentText = x?.ToString() ?? "");
@@ -123,7 +123,7 @@ public sealed class SalesViewModel : ViewModelBase
         if (p is null)
         {
             ProductSearch = barcode;
-            MessageBox.Show($"بارکد «{barcode}» در کالاها پیدا نشد.", "بارکد", MessageBoxButton.OK, MessageBoxImage.Information);
+            AppDialog.Show($"بارکد «{barcode}» در کالاها پیدا نشد.", "بارکد", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
         AddProduct(p);
@@ -132,7 +132,7 @@ public sealed class SalesViewModel : ViewModelBase
     private void AddProduct(Product? p)
     {
         if (p is null) return;
-        if (p.Stock <= 0) { MessageBox.Show("موجودی این کالا صفر است."); return; }
+        if (p.Stock <= 0) { AppDialog.Show("موجودی این کالا صفر است."); return; }
         var item = Cart.FirstOrDefault(x => x.ProductId == p.Id);
         if (item is null)
         {
@@ -141,7 +141,7 @@ public sealed class SalesViewModel : ViewModelBase
             Cart.Add(item);
         }
         else if (item.Quantity + 1 <= item.AvailableStock) item.Quantity++;
-        else { MessageBox.Show("موجودی کافی نیست."); return; }
+        else { AppDialog.Show("موجودی کافی نیست."); return; }
         ProductSearch = "";
         IsProductResultsOpen = false;
         Renumber();
@@ -154,7 +154,7 @@ public sealed class SalesViewModel : ViewModelBase
         if (item is null) return;
         var q = item.Quantity + delta;
         if (q <= 0) { Remove(item); return; }
-        if (q > item.AvailableStock) { MessageBox.Show("موجودی کافی نیست."); return; }
+        if (q > item.AvailableStock) { AppDialog.Show("موجودی کافی نیست."); return; }
         item.Quantity = q;
         TotalsChanged();
     }
@@ -196,7 +196,7 @@ public sealed class SalesViewModel : ViewModelBase
     }
 
     private void Renumber() { for (var i = 0; i < Cart.Count; i++) Cart[i].RowNumber = i + 1; }
-    private void TotalsChanged() { OnPropertyChanged(nameof(SubtotalText)); OnPropertyChanged(nameof(SubtotalLabel)); OnPropertyChanged(nameof(TotalText)); }
+    private void TotalsChanged() { OnPropertyChanged(nameof(SubtotalText)); OnPropertyChanged(nameof(SubtotalLabel)); OnPropertyChanged(nameof(TotalText)); CheckoutCommand.RaiseCanExecuteChanged(); }
 
     private void Checkout()
     {
@@ -205,7 +205,7 @@ public sealed class SalesViewModel : ViewModelBase
             var pt = PaymentText == "نقدی" ? "CASH" : PaymentText == "نسیه" ? "CREDIT" : "";
             if (pt == "CREDIT" && (SelectedCustomer is null || SelectedCustomer.Name == "مشتری عمومی"))
             {
-                MessageBox.Show("برای فروش نسیه یک مشتری مشخص انتخاب کنید.");
+                AppDialog.Show("برای فروش نسیه یک مشتری مشخص انتخاب کنید.");
                 return;
             }
             var no = _sales.Checkout(Cart.ToList(), SelectedCustomer, pt, Discount);
@@ -226,24 +226,24 @@ public sealed class SalesViewModel : ViewModelBase
             if (settings.PrintAfterSale && !string.IsNullOrWhiteSpace(settings.PrinterName))
             {
                 try { _printer.PrintInvoice(no); }
-                catch (Exception printEx) { MessageBox.Show("فاکتور ثبت شد، اما چاپ انجام نشد:\n" + printEx.Message, "چاپ", MessageBoxButton.OK, MessageBoxImage.Warning); }
+                catch (Exception printEx) { AppDialog.Show("فاکتور ثبت شد، اما چاپ انجام نشد:\n" + printEx.Message, "چاپ", MessageBoxButton.OK, MessageBoxImage.Warning); }
             }
-            MessageBox.Show($"فاکتور {no} با موفقیت ثبت شد.", "حسابداری آسان", MessageBoxButton.OK, MessageBoxImage.Information);
+            AppDialog.Show($"فاکتور {no} با موفقیت ثبت شد.", "حسابداری آسان", MessageBoxButton.OK, MessageBoxImage.Information);
         }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "خطا", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "خطا", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void PrintLast()
     {
         if (!_lastInvoiceNo.HasValue) return;
         try { _printer.PrintInvoice(_lastInvoiceNo.Value); }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "چاپ فاکتور", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "چاپ فاکتور", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void PrintInvoice(InvoiceSummary? invoice)
     {
         if (invoice is null) return;
         try { _printer.PrintInvoice(invoice.InvoiceNo); }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "چاپ فاکتور", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "چاپ فاکتور", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 }

@@ -34,5 +34,5 @@ public sealed class ProductsViewModel : PagedViewModelBase
     private void Edit(Product? p){if(p is null)return;var w=new ProductEditWindow(p){Owner=Application.Current.MainWindow};if(w.ShowDialog()==true){_service.Save(w.Product);ReloadCategories();Reload();}}
 
     private void Purchase(Product? p){if(p is null)return;var w=new PurchaseEntryWindow(p){Owner=Application.Current.MainWindow};if(w.ShowDialog()==true)Reload();}
-    private void Delete(Product? p){if(p is null)return;if(MessageBox.Show($"کالای «{p.Name}» حذف شود؟","حسابداری آسان",MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes){_service.Delete(p.Id);Reload();}}
+    private void Delete(Product? p){if(p is null)return;if(AppDialog.Show($"کالای «{p.Name}» حذف شود؟","حسابداری آسان",MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes){_service.Delete(p.Id);Reload();}}
 }

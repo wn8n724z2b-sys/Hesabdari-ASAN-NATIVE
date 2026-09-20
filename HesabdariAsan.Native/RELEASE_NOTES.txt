@@ -1,5 +1,5 @@
 حسابداری آسان Native v4 — WebView Parity RC1
-Version: 4.0.0-rc.1
+Version: 4.0.0-rc.2
 
 - Rebuilt the Native WPF visual layer against the final WebView v3.4 source as the UI/UX reference.
 - Matched final v3.4 Light/Dark color tokens and RTL application structure.
@@ -21,3 +21,13 @@ Version: 4.0.0-rc.1
 - Schema upgraded to v6.
 - XAML/resource/event static validation PASS; accounting formula validation PASS; SQLite quick_check OK.
 - Windows compile/publish/installer startup verification remains gated by GitHub Actions.
+
+
+RC2 interaction fixes
+- Replaced legacy Windows MessageBox prompts with native themed RTL dialogs.
+- Fixed Sales product result popup binding crash and checkout readiness.
+- Added smooth inertial mouse-wheel/touch scrolling with nested-scroll boundary handling.
+- Added animated page transitions and popup fade motion.
+- Added modern native title chrome to all data-entry dialogs.
+- Fixed category management feedback and WebView-parity delete behavior (move products to عمومی).
+- Manual Backup now exports a real .sqlite3 file to a user-selected path while retaining internal safety backup.

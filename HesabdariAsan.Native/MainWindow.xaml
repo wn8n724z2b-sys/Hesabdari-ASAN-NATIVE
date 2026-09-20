@@ -1,6 +1,7 @@
 <Window x:Class="HesabdariAsan.Native.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:HesabdariAsan.Native.Controls"
         Title="حسابداری آسان" Height="900" Width="1500" MinHeight="720" MinWidth="1180"
         WindowStartupLocation="CenterScreen" FlowDirection="LeftToRight" Icon="Assets/app.ico"
         Background="{DynamicResource AppBackground}">
@@ -39,7 +40,7 @@
                         <Viewbox Width="20" Height="20" HorizontalAlignment="Left" Margin="12,0,0,0" IsHitTestVisible="False">
                             <Path Data="{StaticResource IconSearch}" Stroke="{DynamicResource Muted}" StrokeThickness="1.8" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                         </Viewbox>
-                        <Popup IsOpen="{Binding IsSearchOpen}" PlacementTarget="{Binding ElementName=SearchBox}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True" Width="520">
+                        <Popup IsOpen="{Binding IsSearchOpen}" PlacementTarget="{Binding ElementName=SearchBox}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True" PopupAnimation="Fade" Width="520">
                             <Border Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="12" Padding="6" Margin="0,6,0,0" Effect="{DynamicResource CardShadow}">
                                 <ScrollViewer MaxHeight="440" VerticalScrollBarVisibility="Auto">
                                     <ItemsControl ItemsSource="{Binding SearchResults}">
@@ -102,7 +103,7 @@
                 </Grid>
             </Border>
 
-            <ContentControl Grid.Row="1" Content="{Binding CurrentPage}"/>
+            <controls:AnimatedContentControl Grid.Row="1" Content="{Binding CurrentPage}"/>
         </Grid>
 
         <!-- Right sidebar copied from the final v3.4 shell -->

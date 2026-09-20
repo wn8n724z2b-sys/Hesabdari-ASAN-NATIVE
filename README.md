@@ -58,4 +58,4 @@
 
 محیط این گفتگو Windows/.NET WPF ندارد؛ بنابراین **تأیید Compile واقعی فقط در GitHub Actions** انجام می‌شود. Workflow موجود Repository به‌ترتیب `dotnet build`، Publish win-x64، Startup smoke-test، ساخت Inno Setup و Startup smoke-test نسخه نصب‌شده را اجرا می‌کند. تا زمانی که این Workflow سبز نشود، این شاخه «RC1» است و نه Production Final.
 
-Version: **4.0.0-rc.1**
+Version: **4.0.0-rc.2**

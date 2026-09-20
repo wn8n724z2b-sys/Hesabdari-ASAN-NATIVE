@@ -117,15 +117,15 @@ public sealed class ReportsViewModel : PagedViewModelBase
             static string Q(object? v)=>"\""+Convert.ToString(v)?.Replace("\"","\"\"")+"\"";
             var sb=new StringBuilder();sb.Append('\uFEFF');sb.AppendLine(string.Join(",",new[]{"شماره فاکتور","تاریخ و زمان","مشتری","روش پرداخت","تعداد اقلام","مبلغ","وضعیت"}.Select(Q)));
             foreach(var x in rows)sb.AppendLine(string.Join(",",new[]{Q(x.InvoiceNo),Q(x.DateText),Q(x.CustomerName),Q(x.PaymentText),Q(x.ItemsText),Q(x.Total),Q(x.StatusText)}));
-            File.WriteAllText(dlg.FileName,sb.ToString(),new UTF8Encoding(false));MessageBox.Show($"خروجی با موفقیت ذخیره شد.\n\n{dlg.FileName}","خروجی گزارش",MessageBoxButton.OK,MessageBoxImage.Information);
+            File.WriteAllText(dlg.FileName,sb.ToString(),new UTF8Encoding(false));AppDialog.Show($"خروجی با موفقیت ذخیره شد.\n\n{dlg.FileName}","خروجی گزارش",MessageBoxButton.OK,MessageBoxImage.Information);
         }
-        catch(Exception ex){MessageBox.Show(ex.Message,"خروجی گزارش",MessageBoxButton.OK,MessageBoxImage.Warning);}
+        catch(Exception ex){AppDialog.Show(ex.Message,"خروجی گزارش",MessageBoxButton.OK,MessageBoxImage.Warning);}
     }
 
     private void StartNewPeriod()
     {
-        var p=_reports.GetCurrentFinancialPeriod();var answer=MessageBox.Show($"{AccountingPeriodName(p.PeriodNo)} بسته شود و دوره حسابی جدید از همین لحظه آغاز گردد؟\n\nخلاصه دوره فعلی در تاریخچه ذخیره می‌شود و هیچ فاکتور یا داده‌ای حذف نخواهد شد.","شروع دوره حسابی جدید",MessageBoxButton.YesNo,MessageBoxImage.Question,MessageBoxResult.No,MessageBoxOptions.RtlReading|MessageBoxOptions.RightAlign);if(answer!=MessageBoxResult.Yes)return;
-        try{var next=_reports.StartNewFinancialPeriod();Reload();MessageBox.Show($"{AccountingPeriodName(next.PeriodNo)} آغاز شد.","دوره حسابی",MessageBoxButton.OK,MessageBoxImage.Information);}catch(Exception ex){MessageBox.Show(ex.Message,"دوره حسابی",MessageBoxButton.OK,MessageBoxImage.Warning);}
+        var p=_reports.GetCurrentFinancialPeriod();var answer=AppDialog.Show($"{AccountingPeriodName(p.PeriodNo)} بسته شود و دوره حسابی جدید از همین لحظه آغاز گردد؟\n\nخلاصه دوره فعلی در تاریخچه ذخیره می‌شود و هیچ فاکتور یا داده‌ای حذف نخواهد شد.","شروع دوره حسابی جدید",MessageBoxButton.YesNo,MessageBoxImage.Question,MessageBoxResult.No,MessageBoxOptions.RtlReading|MessageBoxOptions.RightAlign);if(answer!=MessageBoxResult.Yes)return;
+        try{var next=_reports.StartNewFinancialPeriod();Reload();AppDialog.Show($"{AccountingPeriodName(next.PeriodNo)} آغاز شد.","دوره حسابی",MessageBoxButton.OK,MessageBoxImage.Information);}catch(Exception ex){AppDialog.Show(ex.Message,"دوره حسابی",MessageBoxButton.OK,MessageBoxImage.Warning);}
     }
 
     private static string AccountingPeriodName(int no)
@@ -133,7 +133,7 @@ public sealed class ReportsViewModel : PagedViewModelBase
         var names=new Dictionary<int,string>{{1,"اول"},{2,"دوم"},{3,"سوم"},{4,"چهارم"},{5,"پنجم"},{6,"ششم"},{7,"هفتم"},{8,"هشتم"},{9,"نهم"},{10,"دهم"}};return names.TryGetValue(no,out var n)?$"دوره حسابی {n}":$"دوره حسابی {no:N0}";
     }
     private static string Money(long value)=>$"{value:N0} ؋";
-    private void Print(InvoiceSummary? invoice){if(invoice is null)return;try{_printer.PrintInvoice(invoice.InvoiceNo);}catch(Exception ex){MessageBox.Show(ex.Message,"چاپ فاکتور",MessageBoxButton.OK,MessageBoxImage.Warning);}}
-    private void Edit(InvoiceSummary? invoice){if(invoice is null||!invoice.IsActive)return;try{var w=new InvoiceEditWindow(invoice.InvoiceNo){Owner=Application.Current.MainWindow};if(w.ShowDialog()==true)Reload();}catch(Exception ex){MessageBox.Show(ex.Message,"ویرایش فاکتور",MessageBoxButton.OK,MessageBoxImage.Warning);}}
-    private void Cancel(InvoiceSummary? invoice){if(invoice is null||!invoice.IsActive)return;var w=new InvoiceCancelWindow{Owner=Application.Current.MainWindow};if(w.ShowDialog()!=true)return;try{_adjustments.Cancel(invoice.InvoiceNo,w.Reason);Reload();MessageBox.Show($"فاکتور #{invoice.InvoiceNo} باطل شد. موجودی و حساب مرتبط برگشت داده شد.","ابطال فاکتور",MessageBoxButton.OK,MessageBoxImage.Information);}catch(Exception ex){MessageBox.Show(ex.Message,"ابطال فاکتور",MessageBoxButton.OK,MessageBoxImage.Warning);}}
+    private void Print(InvoiceSummary? invoice){if(invoice is null)return;try{_printer.PrintInvoice(invoice.InvoiceNo);}catch(Exception ex){AppDialog.Show(ex.Message,"چاپ فاکتور",MessageBoxButton.OK,MessageBoxImage.Warning);}}
+    private void Edit(InvoiceSummary? invoice){if(invoice is null||!invoice.IsActive)return;try{var w=new InvoiceEditWindow(invoice.InvoiceNo){Owner=Application.Current.MainWindow};if(w.ShowDialog()==true)Reload();}catch(Exception ex){AppDialog.Show(ex.Message,"ویرایش فاکتور",MessageBoxButton.OK,MessageBoxImage.Warning);}}
+    private void Cancel(InvoiceSummary? invoice){if(invoice is null||!invoice.IsActive)return;var w=new InvoiceCancelWindow{Owner=Application.Current.MainWindow};if(w.ShowDialog()!=true)return;try{_adjustments.Cancel(invoice.InvoiceNo,w.Reason);Reload();AppDialog.Show($"فاکتور #{invoice.InvoiceNo} باطل شد. موجودی و حساب مرتبط برگشت داده شد.","ابطال فاکتور",MessageBoxButton.OK,MessageBoxImage.Information);}catch(Exception ex){AppDialog.Show(ex.Message,"ابطال فاکتور",MessageBoxButton.OK,MessageBoxImage.Warning);}}
 }

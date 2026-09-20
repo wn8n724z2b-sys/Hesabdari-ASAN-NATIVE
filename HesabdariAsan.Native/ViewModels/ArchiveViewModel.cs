@@ -50,14 +50,14 @@ public sealed class ArchiveViewModel : PagedViewModelBase
     {
         if (invoice is null) return;
         try { _printer.PrintInvoice(invoice.InvoiceNo); }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "چاپ فاکتور", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "چاپ فاکتور", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void Edit(InvoiceSummary? invoice)
     {
         if (invoice is null || !invoice.IsActive) return;
         try { var w = new InvoiceEditWindow(invoice.InvoiceNo) { Owner = Application.Current.MainWindow }; if (w.ShowDialog() == true) Reload(); }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "ویرایش فاکتور", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "ویرایش فاکتور", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void Cancel(InvoiceSummary? invoice)
@@ -66,6 +66,6 @@ public sealed class ArchiveViewModel : PagedViewModelBase
         var w = new InvoiceCancelWindow { Owner = Application.Current.MainWindow };
         if (w.ShowDialog() != true) return;
         try { _adjustments.Cancel(invoice.InvoiceNo, w.Reason); Reload(); }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "ابطال فاکتور", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "ابطال فاکتور", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 }

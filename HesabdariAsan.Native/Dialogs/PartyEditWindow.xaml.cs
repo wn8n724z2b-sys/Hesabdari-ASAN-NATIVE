@@ -13,7 +13,7 @@ public partial class PartyEditWindow : Window
     }
     private void Save_Click(object sender,RoutedEventArgs e)
     {
-        if(string.IsNullOrWhiteSpace(NameBox.Text)){MessageBox.Show("نام را وارد کنید.");return;}if(!long.TryParse(DebtBox.Text,out var debt)){MessageBox.Show("مقدار قرض درست نیست.");return;}
+        if(string.IsNullOrWhiteSpace(NameBox.Text)){AppDialog.Show("نام را وارد کنید.");return;}if(!long.TryParse(DebtBox.Text,out var debt)){AppDialog.Show("مقدار قرض درست نیست.");return;}
         Party.Type=((ComboBoxItem)TypeBox.SelectedItem).Tag?.ToString()=="COMPANY"?"COMPANY":"CUSTOMER";Party.Name=NameBox.Text.Trim();Party.Phone=PhoneBox.Text.Trim();Party.Address=AddressBox.Text.Trim();Party.Debt=debt;Party.IsPinned=PinBox.IsChecked==true;DialogResult=true;
     }
     private void Cancel_Click(object sender,RoutedEventArgs e)=>DialogResult=false;

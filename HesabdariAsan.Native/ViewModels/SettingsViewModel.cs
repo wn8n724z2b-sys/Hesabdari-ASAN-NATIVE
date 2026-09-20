@@ -130,7 +130,7 @@ public sealed class SettingsViewModel : ViewModelBase
                 if (manager) ManagerImagePath = imported; else ShopLogoPath = imported;
                 if (!string.Equals(previous, imported, StringComparison.OrdinalIgnoreCase)) _media.TryDeleteOwned(previous);
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "تصویر", MessageBoxButton.OK, MessageBoxImage.Warning); }
+            catch (Exception ex) { AppDialog.Show(ex.Message, "تصویر", MessageBoxButton.OK, MessageBoxImage.Warning); }
         }
     }
 
@@ -143,7 +143,7 @@ public sealed class SettingsViewModel : ViewModelBase
     private void TestPrint()
     {
         try { if (_printer.PrintTest(PrinterName)) Status = "چاپ آزمایشی ارسال شد."; }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "چاپ آزمایشی", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "چاپ آزمایشی", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private async Task TestOnlineAsync()
@@ -167,11 +167,11 @@ public sealed class SettingsViewModel : ViewModelBase
         OnPropertyChanged(nameof(OnlineControlsEnabled)); OnPropertyChanged(nameof(OnlineStatusLabel)); OnPropertyChanged(nameof(OnlineStatusText));
     }
 
-    private void Backup() { try { var path = _backup.CreateBackup("manual"); _backup.KeepLatest(); Status = $"Backup سالم ساخته شد: {Path.GetFileName(path)}"; } catch (Exception ex) { MessageBox.Show(ex.Message, "Backup", MessageBoxButton.OK, MessageBoxImage.Warning); } }
-    private void Restore() { var dlg = new OpenFileDialog { Filter = "SQLite Backup|*.sqlite3;*.db|همه فایل‌ها|*.*", InitialDirectory = Directory.Exists(Database.BackupsDir) ? Database.BackupsDir : null }; if (dlg.ShowDialog() != true) return; if (MessageBox.Show("دیتابیس فعلی قبل از بازیابی Backup می‌شود. سپس فایل انتخاب‌شده جایگزین شود؟", "بازیابی اطلاعات", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return; try { _backup.RestoreBackup(dlg.FileName); RestartApplication(); } catch (Exception ex) { MessageBox.Show(ex.Message, "بازیابی", MessageBoxButton.OK, MessageBoxImage.Error); } }
-    private void SelectPrinter() { try { var selected = _printer.ChoosePrinter(); if (string.IsNullOrWhiteSpace(selected)) return; PrinterName = selected; _service.Set("printer_name", selected); Status = "پرینتر انتخاب شد."; } catch (Exception ex) { MessageBox.Show(ex.Message, "پرینتر", MessageBoxButton.OK, MessageBoxImage.Warning); } }
-    private void MigrateV34() { var detected = _migration.DetectDatabase(); var dlg = new OpenFileDialog { Filter = "دیتابیس حسابداری آسان v3|hesabdari_asan.sqlite3;*.sqlite3|همه فایل‌ها|*.*" }; if (!string.IsNullOrWhiteSpace(detected)) { dlg.InitialDirectory = Path.GetDirectoryName(detected); dlg.FileName = Path.GetFileName(detected); } if (dlg.ShowDialog() != true) return; if (MessageBox.Show("انتقال v3.4 یک Backup ایمنی می‌سازد و اطلاعات حسابداری فعلی v4 را با دیتای نسخه قدیمی جایگزین می‌کند. ادامه می‌دهید؟", "انتقال اطلاعات v3.4", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return; try { var result = _migration.Import(dlg.FileName, true); MessageBox.Show($"انتقال کامل شد.\n{result}\n\nبرنامه اکنون دوباره اجرا می‌شود.", "انتقال اطلاعات", MessageBoxButton.OK, MessageBoxImage.Information); RestartApplication(); } catch (Exception ex) { MessageBox.Show(ex.Message, "انتقال اطلاعات", MessageBoxButton.OK, MessageBoxImage.Error); } }
-    private void CheckDatabase() { try { var check = Database.QuickCheck(); Status = string.Equals(check, "ok", StringComparison.OrdinalIgnoreCase) ? "سلامت دیتابیس: OK" : "نتیجه بررسی: " + check; } catch (Exception ex) { Status = "خطا در بررسی دیتابیس"; MessageBox.Show(ex.Message, "دیتابیس", MessageBoxButton.OK, MessageBoxImage.Warning); } }
+    private void Backup() { try { var path = _backup.CreateBackup("manual"); _backup.KeepLatest(); Status = $"Backup سالم ساخته شد: {Path.GetFileName(path)}"; } catch (Exception ex) { AppDialog.Show(ex.Message, "Backup", MessageBoxButton.OK, MessageBoxImage.Warning); } }
+    private void Restore() { var dlg = new OpenFileDialog { Filter = "SQLite Backup|*.sqlite3;*.db|همه فایل‌ها|*.*", InitialDirectory = Directory.Exists(Database.BackupsDir) ? Database.BackupsDir : null }; if (dlg.ShowDialog() != true) return; if (AppDialog.Show("دیتابیس فعلی قبل از بازیابی Backup می‌شود. سپس فایل انتخاب‌شده جایگزین شود؟", "بازیابی اطلاعات", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return; try { _backup.RestoreBackup(dlg.FileName); RestartApplication(); } catch (Exception ex) { AppDialog.Show(ex.Message, "بازیابی", MessageBoxButton.OK, MessageBoxImage.Error); } }
+    private void SelectPrinter() { try { var selected = _printer.ChoosePrinter(); if (string.IsNullOrWhiteSpace(selected)) return; PrinterName = selected; _service.Set("printer_name", selected); Status = "پرینتر انتخاب شد."; } catch (Exception ex) { AppDialog.Show(ex.Message, "پرینتر", MessageBoxButton.OK, MessageBoxImage.Warning); } }
+    private void MigrateV34() { var detected = _migration.DetectDatabase(); var dlg = new OpenFileDialog { Filter = "دیتابیس حسابداری آسان v3|hesabdari_asan.sqlite3;*.sqlite3|همه فایل‌ها|*.*" }; if (!string.IsNullOrWhiteSpace(detected)) { dlg.InitialDirectory = Path.GetDirectoryName(detected); dlg.FileName = Path.GetFileName(detected); } if (dlg.ShowDialog() != true) return; if (AppDialog.Show("انتقال v3.4 یک Backup ایمنی می‌سازد و اطلاعات حسابداری فعلی v4 را با دیتای نسخه قدیمی جایگزین می‌کند. ادامه می‌دهید؟", "انتقال اطلاعات v3.4", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return; try { var result = _migration.Import(dlg.FileName, true); AppDialog.Show($"انتقال کامل شد.\n{result}\n\nبرنامه اکنون دوباره اجرا می‌شود.", "انتقال اطلاعات", MessageBoxButton.OK, MessageBoxImage.Information); RestartApplication(); } catch (Exception ex) { AppDialog.Show(ex.Message, "انتقال اطلاعات", MessageBoxButton.OK, MessageBoxImage.Error); } }
+    private void CheckDatabase() { try { var check = Database.QuickCheck(); Status = string.Equals(check, "ok", StringComparison.OrdinalIgnoreCase) ? "سلامت دیتابیس: OK" : "نتیجه بررسی: " + check; } catch (Exception ex) { Status = "خطا در بررسی دیتابیس"; AppDialog.Show(ex.Message, "دیتابیس", MessageBoxButton.OK, MessageBoxImage.Warning); } }
     private void OpenFolder() { Directory.CreateDirectory(Database.BackupsDir); Process.Start(new ProcessStartInfo { FileName = Database.BackupsDir, UseShellExecute = true }); }
     private static void RestartApplication() { var exe = Environment.ProcessPath; if (!string.IsNullOrWhiteSpace(exe)) Process.Start(new ProcessStartInfo { FileName = exe, UseShellExecute = true }); Application.Current.Shutdown(); }
 }

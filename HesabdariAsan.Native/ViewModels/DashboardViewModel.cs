@@ -98,7 +98,7 @@ public sealed class DashboardViewModel : ViewModelBase
         var w = new ProductEditWindow { Owner = Application.Current.MainWindow };
         if (w.ShowDialog() != true) return;
         try { _products.Save(w.Product); Reload(); }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "ثبت کالا", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "ثبت کالا", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void OpenCustomer()
@@ -106,7 +106,7 @@ public sealed class DashboardViewModel : ViewModelBase
         var w = new PartyEditWindow(new Party { Type = "CUSTOMER" }) { Owner = Application.Current.MainWindow };
         if (w.ShowDialog() != true) return;
         try { _parties.Save(w.Party); Reload(); }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "ثبت مشتری", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "ثبت مشتری", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void OpenExpense()
@@ -114,6 +114,6 @@ public sealed class DashboardViewModel : ViewModelBase
         var w = new ExpenseEditWindow { Owner = Application.Current.MainWindow };
         if (w.ShowDialog() != true) return;
         try { _expenses.Save(w.Expense); Reload(); }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "ثبت هزینه", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "ثبت هزینه", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 }

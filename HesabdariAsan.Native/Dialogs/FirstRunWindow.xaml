@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="راه‌اندازی حسابداری آسان" Width="820" Height="760" MinWidth="760" MinHeight="680"
         WindowStartupLocation="CenterScreen" ResizeMode="CanResize" FlowDirection="RightToLeft"
-        Background="{DynamicResource AppBackground}" Icon="../Assets/app.ico">
+        Background="{DynamicResource AppBackground}" Icon="../Assets/app.ico" Style="{StaticResource ModernDialogWindow}">
     <Grid Margin="24">
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
         <Grid Margin="0,0,0,18">

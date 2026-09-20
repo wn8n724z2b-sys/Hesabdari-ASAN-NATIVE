@@ -129,7 +129,7 @@ public partial class PurchaseEntryWindow : Window
             _purchases.Record(_selectedProduct.Id, _selectedSupplier?.Id, qty, cost, payment, NoteBox.Text, packageMode);
             DialogResult = true;
         }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "ثبت خرید", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "ثبت خرید", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private bool IsCredit() => (PaymentBox.SelectedItem as ComboBoxItem)?.Content?.ToString() == "نسیه";

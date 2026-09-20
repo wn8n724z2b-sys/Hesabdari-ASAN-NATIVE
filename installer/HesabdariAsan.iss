@@ -1,5 +1,5 @@
 #define MyAppName "حسابداری آسان"
-#define MyAppVersion "4.0.0-rc.1"
+#define MyAppVersion "4.0.0-rc.2"
 #define MyAppPublisher "MNRAHIMI . Ltd"
 #define MyAppExeName "HesabdariAsan.exe"
 

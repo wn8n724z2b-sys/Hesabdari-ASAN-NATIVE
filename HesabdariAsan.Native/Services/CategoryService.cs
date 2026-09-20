@@ -61,7 +61,7 @@ public sealed class CategoryService
     {
         name=Normalize(name);if(name=="عمومی")throw new InvalidOperationException("دسته عمومی قابل حذف نیست.");
         using var db=Database.Open();using var tx=db.BeginTransaction();
-        using(var c=db.CreateCommand()){c.Transaction=tx;c.CommandText="SELECT COUNT(*) FROM products WHERE is_active=1 AND category=$n";c.Parameters.AddWithValue("$n",name);if(Convert.ToInt32(c.ExecuteScalar()??0)>0)throw new InvalidOperationException("این دسته کالا دارد. ابتدا کالاها را به دسته دیگری منتقل کنید.");}
+        using(var c=db.CreateCommand()){c.Transaction=tx;c.CommandText="UPDATE products SET category='عمومی' WHERE is_active=1 AND category=$n";c.Parameters.AddWithValue("$n",name);c.ExecuteNonQuery();}
         var names=LoadNames(db);names.RemoveAll(x=>string.Equals(x,name,StringComparison.OrdinalIgnoreCase));SaveNames(db,names,tx);AuditService.Write(db,tx,"CATEGORY_DELETE","CATEGORY",name);tx.Commit();
     }
 

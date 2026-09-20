@@ -58,7 +58,7 @@ public partial class InventoryAdjustWindow : Window
             if (!TryReadStock(out var stock) || stock < 0) throw new InvalidOperationException("موجودی جدید معتبر نیست.");
             _inventory.Adjust(_selected.Id, stock, ReasonBox.Text); DialogResult = true;
         }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "اصلاح موجودی", MessageBoxButton.OK, MessageBoxImage.Warning); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "اصلاح موجودی", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
     private bool TryReadStock(out double value)
     {

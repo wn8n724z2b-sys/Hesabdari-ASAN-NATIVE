@@ -51,7 +51,7 @@ public partial class MainWindow : Window
     {
         if (_allowClose || IsSmokeTest) return;
 
-        var answer = MessageBox.Show(
+        var answer = AppDialog.Show(
             "آیا می‌خواهید از حسابداری آسان خارج شوید؟\n\nقبل از خروج یک نسخه پشتیبان ایمن از دیتابیس ساخته می‌شود.",
             "خروج از حسابداری آسان",
             MessageBoxButton.YesNo,
@@ -74,7 +74,7 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             AppLog.Error(ex, "ExitBackup");
-            var closeAnyway = MessageBox.Show(
+            var closeAnyway = AppDialog.Show(
                 "تهیه نسخه پشتیبان هنگام خروج با خطا روبه‌رو شد.\n\n" + ex.Message +
                 "\n\nآیا با این حال برنامه بسته شود؟",
                 "خطای پشتیبان‌گیری",

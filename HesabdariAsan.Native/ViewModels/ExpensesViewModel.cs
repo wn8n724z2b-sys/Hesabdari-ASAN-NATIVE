@@ -20,5 +20,5 @@ public sealed class ExpensesViewModel : PagedViewModelBase
     private string PeriodKey()=>SelectedPeriod switch{"امروز"=>"TODAY","7 روز گذشته"=>"LAST7","ماه جاری"=>"MONTH","ماه قبل"=>"PREVMONTH",_=>"ALL"};
     private void Add(){var w=new ExpenseEditWindow{Owner=Application.Current.MainWindow};if(w.ShowDialog()==true){_service.Save(w.Expense);Page=1;Reload();}}
     private void Edit(Expense? e){if(e is null)return;var w=new ExpenseEditWindow(e){Owner=Application.Current.MainWindow};if(w.ShowDialog()==true){_service.Save(w.Expense);Reload();}}
-    private void Delete(Expense? e){if(e is null)return;if(MessageBox.Show("این هزینه حذف شود؟","حسابداری آسان",MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes){_service.Delete(e.Id);Reload();}}
+    private void Delete(Expense? e){if(e is null)return;if(AppDialog.Show("این هزینه حذف شود؟","حسابداری آسان",MessageBoxButton.YesNo,MessageBoxImage.Question)==MessageBoxResult.Yes){_service.Delete(e.Id);Reload();}}
 }

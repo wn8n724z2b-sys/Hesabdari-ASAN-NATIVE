@@ -151,18 +151,18 @@ public sealed class PartiesViewModel : ViewModelBase
             else _service.RecordCustomerPayment(p.Id, w.Amount);
             Reload();
         }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "حسابداری آسان"); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "حسابداری آسان"); }
     }
     private void Delete(Party? p)
     {
         if (p is null) return;
         try
         {
-            if (MessageBox.Show($"«{p.Name}» حذف شود؟", "حسابداری آسان", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            if (AppDialog.Show($"«{p.Name}» حذف شود؟", "حسابداری آسان", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 _service.Delete(p.Id); Reload();
             }
         }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "حسابداری آسان"); }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "حسابداری آسان"); }
     }
 }
