@@ -10,8 +10,10 @@ public sealed class AppSettings
     public string ShopPhone { get; set; } = "";
     public string ShopAddress { get; set; } = "";
     public string ShopLogoPath { get; set; } = "";
+    public string ReceiptFooter { get; set; } = "سپاس از خرید شما";
     public int AutoBackupPerDay { get; set; } = 4;
     public string PrinterName { get; set; } = "";
     public bool PrintAfterSale { get; set; }
     public bool BarcodeScannerEnabled { get; set; } = true;
+    public string ScannerSuffix { get; set; } = "Enter";
 }
