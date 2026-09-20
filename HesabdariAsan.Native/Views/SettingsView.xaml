@@ -1,0 +1,161 @@
+<UserControl x:Class="HesabdariAsan.Native.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Style="{StaticResource PageRoot}" FlowDirection="RightToLeft">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="26,24,26,40" MaxWidth="1100" HorizontalAlignment="Center">
+            <StackPanel Margin="0,0,0,18">
+                <TextBlock Text="تنظیمات" Style="{StaticResource Eyebrow}"/>
+                <TextBlock Text="تنظیمات برنامه" Style="{StaticResource PageTitle}" Margin="0,2,0,0"/>
+                <TextBlock Text="ظاهر، هویت فروشگاه، چاپ، بارکدخوان و اتصال آنلاین" Style="{StaticResource SmallMuted}"/>
+            </StackPanel>
+
+            <!-- Manager -->
+            <StackPanel Margin="0,0,0,10">
+                <TextBlock Text="مدیر سیستم" Style="{StaticResource SectionTitle}"/>
+                <TextBlock Text="نام و تصویر مدیر فقط برای نمایش داخل برنامه استفاده می‌شود." Style="{StaticResource SmallMuted}" Margin="0,3,0,0"/>
+            </StackPanel>
+            <Border Style="{StaticResource Card}" Margin="0,0,0,18">
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="112"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <Border Width="108" Height="108" CornerRadius="16" Background="{DynamicResource SoftSurface}" BorderBrush="{DynamicResource Border}" BorderThickness="1">
+                            <Grid ClipToBounds="True">
+                                <TextBlock Text="م" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource Accent}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Image Source="{Binding ManagerImagePath}" Stretch="UniformToFill"/>
+                            </Grid>
+                        </Border>
+                        <Button Content="انتخاب عکس" Command="{Binding BrowseManagerImageCommand}" Style="{StaticResource LinkButton}" Margin="0,6,0,0"/>
+                        <Button Content="حذف عکس" Command="{Binding RemoveManagerImageCommand}" Style="{StaticResource LinkButton}" Foreground="{DynamicResource Danger}"/>
+                    </StackPanel>
+                    <Grid Grid.Column="1" Margin="18,0,0,0" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="190"/></Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="نام مدیر" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding ManagerName,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Input}"/>
+                        </StackPanel>
+                        <Border Grid.Column="1" Background="{DynamicResource SoftSurface}" BorderBrush="{DynamicResource Border}" BorderThickness="1" CornerRadius="10" Padding="11" Margin="12,20,0,0">
+                            <StackPanel><TextBlock Text="مدیر سیستم" FontWeight="Bold"/><TextBlock Text="پروفایل نمایشی برنامه" Style="{StaticResource SmallMuted}" Margin="0,2,0,0"/></StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- Appearance -->
+            <StackPanel Margin="0,0,0,10"><TextBlock Text="ظاهر برنامه" Style="{StaticResource SectionTitle}"/><TextBlock Text="تنظیم ساده روشن یا دارک و اندازه متن رابط." Style="{StaticResource SmallMuted}" Margin="0,3,0,0"/></StackPanel>
+            <Border Style="{StaticResource Card}" Margin="0,0,0,18">
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="340"/></Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,0,16,0">
+                        <TextBlock Text="حالت نمایش" FontWeight="Bold"/>
+                        <TextBlock Text="Light / Dark با همان پالت نسخه WebView" Style="{StaticResource SmallMuted}" Margin="0,3,0,9"/>
+                        <ComboBox ItemsSource="{Binding ThemeOptions}" SelectedItem="{Binding SelectedTheme}" Style="{StaticResource Combo}" Width="190" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="70"/></Grid.ColumnDefinitions><TextBlock Text="اندازه متن" FontWeight="Bold"/><TextBlock Grid.Column="1" Text="{Binding UiScaleText}" Foreground="{DynamicResource Accent}" FontWeight="Bold" HorizontalAlignment="Left"/></Grid>
+                        <TextBlock Text="از 100 تا 200 درصد، بدون تغییر داده‌ها" Style="{StaticResource SmallMuted}" Margin="0,3,0,10"/>
+                        <Slider Minimum="1" Maximum="2" Value="{Binding UiScale}" TickFrequency="0.05" IsSnapToTickEnabled="True"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Store identity -->
+            <StackPanel Margin="0,0,0,10"><TextBlock Text="هویت فروشگاه" Style="{StaticResource SectionTitle}"/><TextBlock Text="اطلاعاتی که روی رسید و گزارش‌های فروشگاه استفاده می‌شود." Style="{StaticResource SmallMuted}" Margin="0,3,0,0"/></StackPanel>
+            <Border Style="{StaticResource Card}" Margin="0,0,0,18">
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="170"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <Border Height="158" CornerRadius="15" Background="{DynamicResource SoftSurface}" BorderBrush="{DynamicResource Border}" BorderThickness="1">
+                            <Grid Margin="12">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Border Width="74" Height="74" CornerRadius="18" Background="{DynamicResource AccentSoft}"><Grid ClipToBounds="True"><TextBlock Text="ف" FontSize="23" FontWeight="Bold" Foreground="{DynamicResource Accent}" HorizontalAlignment="Center" VerticalAlignment="Center"/><Image Source="{Binding ShopLogoPath}" Stretch="UniformToFill"/></Grid></Border>
+                                    <TextBlock Text="لوگوی فروشگاه" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                    <TextBlock Text="PNG یا JPG" Style="{StaticResource SmallMuted}" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <Button Content="انتخاب لوگو" Command="{Binding BrowseLogoCommand}" Style="{StaticResource LinkButton}" Margin="0,6,0,0"/>
+                        <Button Content="حذف لوگو" Command="{Binding RemoveLogoCommand}" Style="{StaticResource LinkButton}" Foreground="{DynamicResource Danger}"/>
+                    </StackPanel>
+                    <Grid Grid.Column="1" Margin="20,0,0,0">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Row="0" Grid.ColumnSpan="2"><TextBlock Text="نام فروشگاه" Style="{StaticResource FieldLabel}"/><TextBox Text="{Binding ShopName,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Input}"/></StackPanel>
+                        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,10,0,0"><TextBlock Text="آدرس فروشگاه" Style="{StaticResource FieldLabel}"/><TextBox Text="{Binding ShopAddress,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Input}"/></StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,10,6,0"><TextBlock Text="شماره تماس" Style="{StaticResource FieldLabel}"/><TextBox Text="{Binding ShopPhone,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Input}" FlowDirection="LeftToRight" TextAlignment="Right"/></StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="1" Margin="6,10,0,0"><TextBlock Text="متن پایین رسید" Style="{StaticResource FieldLabel}"/><TextBox Text="{Binding ReceiptFooter,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Input}"/></StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- Hardware -->
+            <StackPanel Margin="0,0,0,10"><TextBlock Text="چاپ و بارکد" Style="{StaticResource SectionTitle}"/><TextBlock Text="پرینتر رسید و بارکدخوان در دو کارت هم‌اندازه." Style="{StaticResource SmallMuted}" Margin="0,3,0,0"/></StackPanel>
+            <Grid Margin="0,0,0,18">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,7,0">
+                    <StackPanel>
+                        <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="پرینتر رسید" Style="{StaticResource SectionTitle}"/><TextBlock Text="XPrinter و پرینترهای حرارتی Windows" Style="{StaticResource SmallMuted}" Margin="0,3,0,0"/></StackPanel><Border Grid.Column="1" Style="{StaticResource SuccessPill}"><TextBlock Text="80mm" Foreground="{DynamicResource Success}" FontWeight="Bold"/></Border></Grid>
+                        <TextBlock Text="نام پرینتر" Style="{StaticResource FieldLabel}" Margin="0,14,0,5"/>
+                        <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="100"/></Grid.ColumnDefinitions><ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding PrinterName}" IsEditable="True" Text="{Binding PrinterName,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Combo}"/><Button Grid.Column="1" Content="شناسایی" Command="{Binding DetectPrintersCommand}" Style="{StaticResource SecondaryButton}" Margin="8,0,0,0"/></Grid>
+                        <Border Style="{StaticResource SwitchRow}" Margin="0,12,0,0"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="چاپ خودکار" FontWeight="Bold"/><TextBlock Text="بعد از ثبت فروش رسید مستقیم چاپ شود" Style="{StaticResource SmallMuted}"/></StackPanel><CheckBox Grid.Column="1" IsChecked="{Binding PrintAfterSale}" Style="{StaticResource SwitchCheckBox}"/></Grid></Border>
+                        <Button Content="چاپ آزمایشی 80mm" Command="{Binding TestPrintCommand}" Style="{StaticResource SecondaryButton}" Margin="0,12,0,0"/>
+                        <Border Background="{DynamicResource SoftSurface}" CornerRadius="9" Padding="10" Margin="0,10,0,0"><TextBlock Text="چاپ Native Windows برای حفظ درست متن دری/فارسی؛ Auto Cut استفاده نمی‌شود." Style="{StaticResource SmallMuted}" TextWrapping="Wrap"/></Border>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Style="{StaticResource Card}" Margin="7,0,0,0">
+                    <StackPanel>
+                        <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="بارکدخوان" Style="{StaticResource SectionTitle}"/><TextBlock Text="USB HID / Laser Scanner" Style="{StaticResource SmallMuted}" Margin="0,3,0,0"/></StackPanel><Border Grid.Column="1" Style="{StaticResource WarningPill}"><TextBlock Text="Raw Input" Foreground="{DynamicResource Warning}" FontWeight="Bold"/></Border></Grid>
+                        <Border Style="{StaticResource SwitchRow}" Margin="0,14,0,0"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="تشخیص خودکار اسکن" FontWeight="Bold"/><TextBlock Text="اسکنر Raw Input و Keyboard Wedge" Style="{StaticResource SmallMuted}"/></StackPanel><CheckBox Grid.Column="1" IsChecked="{Binding BarcodeScannerEnabled}" Style="{StaticResource SwitchCheckBox}"/></Grid></Border>
+                        <TextBlock Text="Suffix" Style="{StaticResource FieldLabel}" Margin="0,14,0,5"/>
+                        <ComboBox ItemsSource="{Binding ScannerSuffixOptions}" SelectedItem="{Binding ScannerSuffix}" Style="{StaticResource Combo}" Width="170" HorizontalAlignment="Right"/>
+                        <Border Background="{DynamicResource SoftSurface}" CornerRadius="9" Padding="10" Margin="0,12,0,0"><StackPanel><TextBlock Text="{Binding ScannerStatusText}" FontWeight="SemiBold"/><TextBlock Text="در صفحه فروش، نام یا بارکد را نیز می‌توان با کیبورد جستجو کرد." Style="{StaticResource SmallMuted}" TextWrapping="Wrap" Margin="0,3,0,0"/></StackPanel></Border>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Online -->
+            <StackPanel Margin="0,0,0,10"><TextBlock Text="آنلاین" Style="{StaticResource SectionTitle}"/><TextBlock Text="اختیاری؛ در حالت خاموش برنامه کاملاً محلی و آفلاین است." Style="{StaticResource SmallMuted}" Margin="0,3,0,0"/></StackPanel>
+            <Border Style="{StaticResource Card}" Margin="0,0,0,18">
+                <StackPanel>
+                    <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="اتصال آنلاین" Style="{StaticResource SectionTitle}"/><TextBlock Text="اتصال اختیاری به سرور و داشبورد آنلاین" Style="{StaticResource SmallMuted}" Margin="0,3,0,0"/></StackPanel><Border Grid.Column="1" Background="{DynamicResource AccentSoft}" BorderBrush="Transparent" Style="{StaticResource Pill}"><TextBlock Text="{Binding OnlineStatusLabel}" Foreground="{DynamicResource Accent}" FontWeight="Bold"/></Border></Grid>
+                    <Border Style="{StaticResource SwitchRow}" Margin="0,14,0,0"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="فعال‌سازی اتصال آنلاین" FontWeight="Bold"/><TextBlock Text="در حالت خاموش هیچ داده‌ای به شبکه ارسال نمی‌شود." Style="{StaticResource SmallMuted}"/></StackPanel><CheckBox Grid.Column="1" IsChecked="{Binding OnlineEnabled}" Style="{StaticResource SwitchCheckBox}"/></Grid></Border>
+                    <Grid Margin="0,12,0,0" IsEnabled="{Binding OnlineControlsEnabled}">
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition Width="180"/></Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,6,0"><TextBlock Text="آدرس سرور" Style="{StaticResource FieldLabel}"/><TextBox Text="{Binding OnlineServerUrl,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Input}" FlowDirection="LeftToRight" TextAlignment="Left"/></StackPanel>
+                        <StackPanel Grid.Column="1" Margin="6,0"><TextBlock Text="کد فروشگاه" Style="{StaticResource FieldLabel}"/><TextBox Text="{Binding OnlineStoreCode,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Input}" FlowDirection="LeftToRight" TextAlignment="Left"/></StackPanel>
+                        <StackPanel Grid.Column="2" Margin="6,0,0,0"><TextBlock Text="فاصله همگام‌سازی" Style="{StaticResource FieldLabel}"/><ComboBox ItemsSource="{Binding OnlineSyncMinuteOptions}" SelectedItem="{Binding OnlineSyncMinutes}" Style="{StaticResource Combo}"/></StackPanel>
+                    </Grid>
+                    <Grid Margin="0,10,0,0" IsEnabled="{Binding OnlineControlsEnabled}"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Style="{StaticResource SwitchRow}" Margin="0,0,6,0"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="همگام‌سازی فروش‌ها" FontWeight="Bold"/><TextBlock Text="فاکتورها و دریافت‌ها" Style="{StaticResource SmallMuted}"/></StackPanel><CheckBox Grid.Column="1" IsChecked="{Binding OnlineSyncSales}" Style="{StaticResource SwitchCheckBox}"/></Grid></Border>
+                        <Border Grid.Column="1" Style="{StaticResource SwitchRow}" Margin="6,0,0,0"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="همگام‌سازی موجودی" FontWeight="Bold"/><TextBlock Text="کالاها، خریدها و موجودی" Style="{StaticResource SmallMuted}"/></StackPanel><CheckBox Grid.Column="1" IsChecked="{Binding OnlineSyncInventory}" Style="{StaticResource SwitchCheckBox}"/></Grid></Border>
+                    </Grid>
+                    <Grid Margin="0,12,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Border Background="{DynamicResource SoftSurface}" CornerRadius="9" Padding="11"><TextBlock Text="{Binding OnlineStatusText}" Style="{StaticResource SmallMuted}" TextWrapping="Wrap"/></Border><Button Grid.Column="1" Content="بررسی اتصال" Command="{Binding TestOnlineCommand}" Style="{StaticResource SecondaryButton}" Margin="8,0,0,0"/><Button Grid.Column="2" Content="همگام‌سازی حالا" Command="{Binding SyncOnlineCommand}" Style="{StaticResource PrimaryButton}" Margin="8,0,0,0"/></Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Compatibility -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,14">
+                <StackPanel>
+                    <TextBlock Text="سازگاری" Style="{StaticResource SectionTitle}"/>
+                    <TextBlock Text="نسخه Native Windows · بدون WebView" Style="{StaticResource SmallMuted}" Margin="0,3,0,10"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="220"/></Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                        <TextBlock Text="Windows 10/11 64-bit" Margin="0,7"/><TextBlock Grid.Column="1" Text="فعال" Foreground="{DynamicResource Success}" FontWeight="Bold" Margin="0,7"/>
+                        <TextBlock Grid.Row="1" Text="رابط کاربری" Margin="0,7"/><TextBlock Grid.Row="1" Grid.Column="1" Text="WPF Native" Foreground="{DynamicResource Success}" FontWeight="Bold" Margin="0,7"/>
+                        <TextBlock Grid.Row="2" Text="SQLite" Margin="0,7"/><TextBlock Grid.Row="2" Grid.Column="1" Text="WAL + Backup" Foreground="{DynamicResource Success}" FontWeight="Bold" Margin="0,7"/>
+                        <TextBlock Grid.Row="3" Text="چاپ حرارتی 80mm" Margin="0,7"/><TextBlock Grid.Row="3" Grid.Column="1" Text="Windows Driver" Foreground="{DynamicResource Success}" FontWeight="Bold" Margin="0,7"/>
+                        <TextBlock Grid.Row="4" Text="بارکدخوان USB HID" Margin="0,7"/><TextBlock Grid.Row="4" Grid.Column="1" Text="Raw Input" Foreground="{DynamicResource Success}" FontWeight="Bold" Margin="0,7"/>
+                        <TextBlock Grid.Row="5" Text="اتصال آنلاین" Margin="0,7"/><TextBlock Grid.Row="5" Grid.Column="1" Text="اختیاری" Foreground="{DynamicResource Accent}" FontWeight="Bold" Margin="0,7"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Status}" Foreground="{DynamicResource Success}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                <Button Grid.Column="1" Content="ذخیره تنظیمات" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButton}" Padding="22,0" Height="42"/>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
