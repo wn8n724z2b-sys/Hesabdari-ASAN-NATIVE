@@ -81,7 +81,10 @@ FROM products p WHERE p.id=$id LIMIT 1";
 COALESCE(NULLIF(p.base_unit,''),NULLIF(p.unit,''),'دانه'),COALESCE(NULLIF(p.purchase_unit,''),COALESCE(NULLIF(p.base_unit,''),NULLIF(p.unit,''),'دانه')),
 p.unit_conversion_enabled,p.units_per_purchase,p.package_buy_price,COALESCE(p.image_path,''),p.purchase_price,p.sale_price,p.stock,p.min_stock,p.is_active,
 COALESCE((SELECT group_concat(x.barcode,char(31)) FROM (SELECT barcode FROM product_barcodes WHERE product_id=p.id ORDER BY is_primary DESC,id) x),'')
-FROM products p WHERE p.is_active=1 AND (p.barcode=$b OR EXISTS(SELECT 1 FROM product_barcodes pb WHERE pb.product_id=p.id AND pb.barcode=$b)) LIMIT 1";
+FROM product_barcodes hit
+JOIN products p ON p.id=hit.product_id
+WHERE p.is_active=1 AND hit.barcode=$b
+LIMIT 1";
         cmd.Parameters.AddWithValue("$b", barcode);
         using var r = cmd.ExecuteReader();
         return r.Read() ? ReadProduct(r, 0) : null;
@@ -172,8 +175,9 @@ VALUES($n,$producer,$b,$c,$u,$base,$purchase,$conv,$units,$pack,$img,$pp,$sp,$st
         foreach (var barcode in product.Barcodes)
         {
             using var dup = db.CreateCommand(); dup.Transaction = tx;
-            dup.CommandText = @"SELECT COUNT(*) FROM products p
-WHERE p.is_active=1 AND p.id<>$id AND (p.barcode=$b OR EXISTS(SELECT 1 FROM product_barcodes pb WHERE pb.product_id=p.id AND pb.barcode=$b))";
+            dup.CommandText = @"SELECT COUNT(*) FROM product_barcodes pb
+JOIN products p ON p.id=pb.product_id
+WHERE p.is_active=1 AND p.id<>$id AND pb.barcode=$b";
             dup.Parameters.AddWithValue("$b", barcode); dup.Parameters.AddWithValue("$id", product.Id);
             if (Convert.ToInt32(dup.ExecuteScalar() ?? 0) > 0) throw new InvalidOperationException($"بارکد «{barcode}» قبلاً برای کالای دیگری ثبت شده است.");
         }

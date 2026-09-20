@@ -1,10 +1,11 @@
 using Microsoft.Data.Sqlite;
+using HesabdariAsan.Native.Models;
 
 namespace HesabdariAsan.Native.Data;
 
 public static class Database
 {
-    public const int CurrentSchemaVersion = 6;
+    public const int CurrentSchemaVersion = 7;
 
     public static string AppDataDir => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -16,10 +17,14 @@ public static class Database
     public static SqliteConnection Open()
     {
         Directory.CreateDirectory(AppDataDir);
-        var connection = new SqliteConnection($"Data Source={DbPath};Cache=Shared");
+        var connection = new SqliteConnection($"Data Source={DbPath};Cache=Shared;Pooling=True;Default Timeout=5");
         connection.Open();
         using var pragma = connection.CreateCommand();
-        pragma.CommandText = "PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;";
+        pragma.CommandText = @"PRAGMA foreign_keys=ON;
+PRAGMA busy_timeout=5000;
+PRAGMA temp_store=MEMORY;
+PRAGMA cache_size=-32768;
+PRAGMA mmap_size=268435456;";
         pragma.ExecuteNonQuery();
         return connection;
     }
@@ -283,7 +288,24 @@ SELECT id,barcode,1 FROM products WHERE trim(COALESCE(barcode,''))<>'';";
         }
         using (var indexes = db.CreateCommand())
         {
-            indexes.CommandText = "CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status);";
+            indexes.CommandText = @"
+CREATE INDEX IF NOT EXISTS idx_products_active_name ON products(is_active,name);
+CREATE INDEX IF NOT EXISTS idx_products_active_category_name ON products(is_active,category,name);
+CREATE INDEX IF NOT EXISTS idx_parties_type_name ON parties(type,name);
+CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status);
+CREATE INDEX IF NOT EXISTS idx_invoices_created_id ON invoices(created_at DESC,id DESC);
+CREATE INDEX IF NOT EXISTS idx_invoices_status_created ON invoices(status,created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_invoices_customer_status_created ON invoices(customer_id,status,created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_invoice_items_invoice_id ON invoice_items(invoice_id,id);
+CREATE INDEX IF NOT EXISTS idx_invoice_items_product_invoice ON invoice_items(product_id,invoice_id);
+CREATE INDEX IF NOT EXISTS idx_inventory_product_created ON inventory_ledger(product_id,created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_purchases_product_created ON purchases(product_id,created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_purchases_supplier_created ON purchases(supplier_id,created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_expenses_created_category ON expenses(created_at,category);
+CREATE INDEX IF NOT EXISTS idx_customer_receipts_party_created ON customer_receipts(party_id,created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_supplier_payments_party_created ON supplier_payments(party_id,created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_audit_entity_created ON audit_log(entity_type,entity_id,created_at DESC);
+";
             indexes.ExecuteNonQuery();
         }
         using (var period = db.CreateCommand())
@@ -315,6 +337,53 @@ ON CONFLICT(key) DO UPDATE SET value=excluded.value";
         using var alter = db.CreateCommand();
         alter.CommandText = $"ALTER TABLE {table} ADD COLUMN {column} {definition};";
         alter.ExecuteNonQuery();
+    }
+
+
+    public static DatabaseDiagnostics GetDiagnostics()
+    {
+        using var db = Open();
+        static long ScalarLong(SqliteConnection db, string sql)
+        {
+            using var cmd = db.CreateCommand();
+            cmd.CommandText = sql;
+            return Convert.ToInt64(cmd.ExecuteScalar() ?? 0L);
+        }
+
+        var dbInfo = new FileInfo(DbPath);
+        var walInfo = new FileInfo(DbPath + "-wal");
+        return new DatabaseDiagnostics
+        {
+            DatabaseBytes = dbInfo.Exists ? dbInfo.Length : 0,
+            WalBytes = walInfo.Exists ? walInfo.Length : 0,
+            SchemaVersion = (int)ScalarLong(db, "SELECT COALESCE((SELECT CAST(value AS INTEGER) FROM app_meta WHERE key='schema_version'),0);"),
+            IndexCount = (int)ScalarLong(db, "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name NOT LIKE 'sqlite_%';"),
+            ProductCount = ScalarLong(db, "SELECT COUNT(*) FROM products;"),
+            InvoiceCount = ScalarLong(db, "SELECT COUNT(*) FROM invoices;"),
+            InvoiceItemCount = ScalarLong(db, "SELECT COUNT(*) FROM invoice_items;"),
+            PartyCount = ScalarLong(db, "SELECT COUNT(*) FROM parties;"),
+            PurchaseCount = ScalarLong(db, "SELECT COUNT(*) FROM purchases;"),
+            ExpenseCount = ScalarLong(db, "SELECT COUNT(*) FROM expenses;")
+        };
+    }
+
+    public static string Optimize()
+    {
+        using var db = Open();
+        using (var cmd = db.CreateCommand())
+        {
+            cmd.CommandText = "PRAGMA optimize;";
+            cmd.ExecuteNonQuery();
+        }
+        string checkpoint;
+        using (var cmd = db.CreateCommand())
+        {
+            cmd.CommandText = "PRAGMA wal_checkpoint(PASSIVE);";
+            using var reader = cmd.ExecuteReader();
+            if (reader.Read()) checkpoint = $"busy={reader.GetInt64(0)}, log={reader.GetInt64(1)}, checkpointed={reader.GetInt64(2)}";
+            else checkpoint = "ok";
+        }
+        return checkpoint;
     }
 
     public static string QuickCheck()
