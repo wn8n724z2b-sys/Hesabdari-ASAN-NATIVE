@@ -14,14 +14,15 @@ public sealed class DataSupportViewModel : ViewModelBase
     private readonly V34MigrationService _migration = new();
     private readonly AdminSecurityService _security = new();
     private int _autoBackupPerDay = 4;
-    private string _status = "", _lastBackup = "—";
+    private string _status = "", _lastBackup = "—", _databaseSummary = "در حال خواندن وضعیت موتور داده…";
     private bool _isUnlocked;
 
     public IReadOnlyList<int> BackupOptions { get; } = new[] { 1, 2, 3, 4, 5, 6 };
     public int AutoBackupPerDay { get => _autoBackupPerDay; set { if (Set(ref _autoBackupPerDay, Math.Clamp(value, 1, 6))) _settings.Set("auto_backup_per_day", _autoBackupPerDay.ToString()); } }
     public string Status { get => _status; private set => Set(ref _status, value); }
     public string LastBackup { get => _lastBackup; private set => Set(ref _lastBackup, value); }
-    public bool IsUnlocked { get => _isUnlocked; private set { if (Set(ref _isUnlocked, value)) OnPropertyChanged(nameof(IsLocked)); } }
+    public string DatabaseSummary { get => _databaseSummary; private set => Set(ref _databaseSummary, value); }
+    public bool IsUnlocked { get => _isUnlocked; private set { if (Set(ref _isUnlocked, value)) { OnPropertyChanged(nameof(IsLocked)); ResetCommand?.RaiseCanExecuteChanged(); OptimizeDatabaseCommand?.RaiseCanExecuteChanged(); } } }
     public bool IsLocked => !IsUnlocked;
     public bool HasAdminPassword => _security.HasPassword;
     public string LockHint => HasAdminPassword ? "برای دسترسی رمز مدیر را وارد کنید." : "رمز مدیر هنوز تعیین نشده است؛ بخش فعلاً باز است.";
@@ -35,6 +36,7 @@ public sealed class DataSupportViewModel : ViewModelBase
     public RelayCommand LockCommand { get; }
     public RelayCommand ChangePasswordCommand { get; }
     public RelayCommand ResetCommand { get; }
+    public RelayCommand OptimizeDatabaseCommand { get; }
 
     public DataSupportViewModel()
     {
@@ -48,6 +50,7 @@ public sealed class DataSupportViewModel : ViewModelBase
         LockCommand = new RelayCommand(_ => IsUnlocked = false, _ => _security.HasPassword);
         ChangePasswordCommand = new RelayCommand(_ => ChangePassword());
         ResetCommand = new RelayCommand(_ => ResetApplication(), _ => IsUnlocked);
+        OptimizeDatabaseCommand = new RelayCommand(_ => OptimizeDatabase(), _ => IsUnlocked);
         Reload();
     }
 
@@ -58,6 +61,7 @@ public sealed class DataSupportViewModel : ViewModelBase
         OnPropertyChanged(nameof(HasAdminPassword)); OnPropertyChanged(nameof(LockHint));
         var latest = _backup.LatestBackup();
         LastBackup = latest is null ? "هنوز پشتیبان ساخته نشده" : $"آخرین پشتیبان: {Path.GetFileName(latest)}";
+        ReloadDatabaseSummary();
     }
 
     public bool Unlock(string password)
@@ -72,6 +76,29 @@ public sealed class DataSupportViewModel : ViewModelBase
     {
         var w = new AdminPasswordWindow { Owner = Application.Current.MainWindow };
         if (w.ShowDialog() == true) { IsUnlocked = true; Status = "رمز مدیر تغییر کرد."; Reload(); }
+    }
+
+
+    private void ReloadDatabaseSummary()
+    {
+        try
+        {
+            var d = Database.GetDiagnostics();
+            DatabaseSummary = $"Schema v{d.SchemaVersion} · {d.IndexCount:N0} Index · DB {HesabdariAsan.Native.Models.DatabaseDiagnostics.FormatBytes(d.DatabaseBytes)} · WAL {HesabdariAsan.Native.Models.DatabaseDiagnostics.FormatBytes(d.WalBytes)}\n" +
+                              $"کالا {d.ProductCount:N0} · فاکتور {d.InvoiceCount:N0} · اقلام فاکتور {d.InvoiceItemCount:N0} · اشخاص {d.PartyCount:N0} · خرید {d.PurchaseCount:N0} · هزینه {d.ExpenseCount:N0}";
+        }
+        catch (Exception ex) { DatabaseSummary = "خواندن وضعیت دیتابیس ناموفق بود: " + ex.Message; }
+    }
+
+    private void OptimizeDatabase()
+    {
+        try
+        {
+            var checkpoint = Database.Optimize();
+            ReloadDatabaseSummary();
+            Status = "بهینه‌سازی دیتابیس انجام شد · WAL checkpoint: " + checkpoint;
+        }
+        catch (Exception ex) { AppDialog.Show(ex.Message, "بهینه‌سازی دیتابیس", MessageBoxButton.OK, MessageBoxImage.Warning); }
     }
 
     private void Backup()

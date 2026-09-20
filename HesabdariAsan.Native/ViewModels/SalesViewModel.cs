@@ -14,6 +14,8 @@ public sealed class SalesViewModel : ViewModelBase
     private readonly DashboardService _dashboard = new();
     private readonly ReceiptPrinterService _printer = new();
     private readonly SettingsService _settings = new();
+    private readonly DebounceDispatcher _productSearchDebounce = new(TimeSpan.FromMilliseconds(120));
+    private readonly DebounceDispatcher _customerSearchDebounce = new(TimeSpan.FromMilliseconds(180));
     private string _productSearch = "", _customerSearch = "", _paymentText = "", _discountText = "0";
     private Party? _selectedCustomer;
     private bool _isProductResultsOpen, _isCustomerResultsOpen, _isCustomerPickerOpen;
@@ -28,8 +30,14 @@ public sealed class SalesViewModel : ViewModelBase
     public ObservableCollection<InvoiceSummary> RecentInvoices { get; } = new();
     public IReadOnlyList<int> RecentLimits { get; } = new[] { 10, 20, 50 };
 
-    public string ProductSearch { get => _productSearch; set { if (Set(ref _productSearch, value)) ReloadProducts(); } }
-    public string CustomerSearch { get => _customerSearch; set { if (Set(ref _customerSearch, value)) ReloadCustomers(); } }
+    public string ProductSearch { get => _productSearch; set { if (Set(ref _productSearch, value)) {
+        if (string.IsNullOrWhiteSpace(value)) { _productSearchDebounce.Cancel(); ProductResults.Clear(); IsProductResultsOpen = false; }
+        else _productSearchDebounce.Schedule(ReloadProducts);
+    } } }
+    public string CustomerSearch { get => _customerSearch; set { if (Set(ref _customerSearch, value)) {
+        if (string.IsNullOrWhiteSpace(value)) { _customerSearchDebounce.Cancel(); CustomerResults.Clear(); IsCustomerResultsOpen = false; }
+        else _customerSearchDebounce.Schedule(ReloadCustomers);
+    } } }
     public string PaymentText { get => _paymentText; set { if (Set(ref _paymentText, value)) { OnPropertyChanged(nameof(IsCash)); OnPropertyChanged(nameof(IsCredit)); OnPropertyChanged(nameof(PaymentRequired)); CheckoutCommand?.RaiseCanExecuteChanged(); } } }
     public bool IsCash => PaymentText == "نقدی";
     public bool IsCredit => PaymentText == "نسیه";

@@ -8,6 +8,7 @@ public sealed class MainViewModel : ViewModelBase
 {
     private readonly GlobalSearchService _globalSearch = new();
     private readonly SettingsService _settingsService = new();
+    private readonly DebounceDispatcher _globalSearchDebounce = new(TimeSpan.FromMilliseconds(180));
     private DashboardViewModel? _dashboard;
     private SalesViewModel? _sales;
     private ProductsViewModel? _products;
@@ -47,7 +48,10 @@ public sealed class MainViewModel : ViewModelBase
     public string CurrentPageKey { get => _currentPageKey; private set => Set(ref _currentPageKey, value); }
     public string PageTitle { get => _pageTitle; private set => Set(ref _pageTitle, value); }
     public string PageSubtitle { get => _pageSubtitle; private set => Set(ref _pageSubtitle, value); }
-    public string GlobalQuery { get => _globalQuery; set { if (Set(ref _globalQuery, value)) RunSearch(); } }
+    public string GlobalQuery { get => _globalQuery; set { if (Set(ref _globalQuery, value)) {
+        if (string.IsNullOrWhiteSpace(value)) { _globalSearchDebounce.Cancel(); SearchResults.Clear(); IsSearchOpen = false; }
+        else _globalSearchDebounce.Schedule(RunSearch);
+    } } }
     public bool IsSearchOpen { get => _isSearchOpen; set => Set(ref _isSearchOpen, value); }
 
     public RelayCommand NavigateCommand { get; }
@@ -139,6 +143,7 @@ public sealed class MainViewModel : ViewModelBase
     private void OpenHit(SearchHit? hit)
     {
         if (hit is null) return;
+        _globalSearchDebounce.Cancel();
         Navigate(hit.TargetPage);
         GlobalQuery = "";
         IsSearchOpen = false;

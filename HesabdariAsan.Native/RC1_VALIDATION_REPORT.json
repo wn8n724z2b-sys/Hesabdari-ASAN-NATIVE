@@ -1,13 +1,13 @@
 {
   "xaml": {
-    "count": 29,
+    "count": 30,
     "xml_errors": [],
     "class_errors": [],
     "event_errors": []
   },
   "resources": {
-    "defined": 100,
-    "references": 1115,
+    "defined": 101,
+    "references": 1147,
     "missing": []
   },
   "accounting_formula_test": {
