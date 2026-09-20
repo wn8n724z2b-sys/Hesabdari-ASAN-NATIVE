@@ -1,0 +1,31 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Exact visual tokens from final WebView v3.4, lines 673-678. -->
+    <SolidColorBrush x:Key="AppBackground" Color="#F6F8FB"/>
+    <SolidColorBrush x:Key="Surface" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="SoftSurface" Color="#F6F8FB"/>
+    <SolidColorBrush x:Key="Sidebar" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="Border" Color="#E8EDF4"/>
+    <SolidColorBrush x:Key="Foreground" Color="#18243A"/>
+    <SolidColorBrush x:Key="Muted" Color="#7D8AA0"/>
+    <SolidColorBrush x:Key="MutedStrong" Color="#5E6C82"/>
+    <SolidColorBrush x:Key="TextPrimary" Color="#18243A"/>
+    <SolidColorBrush x:Key="HoverSurface" Color="#F6F8FB"/>
+    <SolidColorBrush x:Key="Hover" Color="#F2F6FA"/>
+    <SolidColorBrush x:Key="InputBackground" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="Accent" Color="#2F80ED"/>
+    <SolidColorBrush x:Key="AccentHover" Color="#246FD1"/>
+    <SolidColorBrush x:Key="AccentSoft" Color="#EDF5FF"/>
+    <SolidColorBrush x:Key="Success" Color="#18A66A"/>
+    <SolidColorBrush x:Key="SuccessSoft" Color="#EAF9F2"/>
+    <SolidColorBrush x:Key="Danger" Color="#EF5B68"/>
+    <SolidColorBrush x:Key="DangerSoft" Color="#FFF0F2"/>
+    <SolidColorBrush x:Key="Warning" Color="#E4A11B"/>
+    <SolidColorBrush x:Key="WarningSoft" Color="#FFF8E7"/>
+    <SolidColorBrush x:Key="Purple" Color="#7657E8"/>
+    <SolidColorBrush x:Key="PurpleSoft" Color="#F3EFFF"/>
+    <SolidColorBrush x:Key="Cyan" Color="#23A7A1"/>
+    <SolidColorBrush x:Key="CyanSoft" Color="#EAFAFA"/>
+    <SolidColorBrush x:Key="Overlay" Color="#57132231"/>
+    <SolidColorBrush x:Key="Selection" Color="#DCEEFF"/>
+    <DropShadowEffect x:Key="CardShadow" Color="#1B3453" BlurRadius="28" ShadowDepth="2" Opacity="0.055"/>
+</ResourceDictionary>

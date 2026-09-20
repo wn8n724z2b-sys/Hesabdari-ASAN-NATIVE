@@ -1,0 +1,23 @@
+حسابداری آسان Native v4 — WebView Parity RC1
+Version: 4.0.0-rc.1
+
+- Rebuilt the Native WPF visual layer against the final WebView v3.4 source as the UI/UX reference.
+- Matched final v3.4 Light/Dark color tokens and RTL application structure.
+- Rebuilt right sidebar, 82px topbar, global search, system clock and work-session display.
+- Replaced keyboard-symbol navigation with vector icons.
+- Added WebView-like page motion: 160ms fade + 7px translate and pressed-button scale.
+- Restored the free-version badge and clickable © MNRAHIMI . Ltd footer.
+- Rebuilt Dashboard, POS, Products, Parties, Categories, Expenses, Inventory, Reports, Archive, Data Support and Settings.
+- POS keeps mandatory cash/credit selection, barcode Raw Input, customer search and fast product search.
+- Product model now supports producer, product image, multiple barcodes, base/purchase unit conversion and package pricing.
+- Purchase flow supports package-to-base conversion and weighted average purchase cost.
+- Reports now include WebView period filters, 5 KPIs, togglable financial series, detailed financial summary, current balances and financial-period lifecycle.
+- Financial chart now renders negative net-profit values with a visible zero axis.
+- Added Excel-compatible CSV report export.
+- Archive now shows item quantity and returns to Reports, matching WebView flow.
+- Added protected full-data reset with automatic safety backup.
+- Added first-run onboarding and admin security flow.
+- v3.4 migration expanded for newer product/unit/barcode/media fields.
+- Schema upgraded to v6.
+- XAML/resource/event static validation PASS; accounting formula validation PASS; SQLite quick_check OK.
+- Windows compile/publish/installer startup verification remains gated by GitHub Actions.
