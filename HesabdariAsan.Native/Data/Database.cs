@@ -288,8 +288,8 @@ SELECT id,barcode,1 FROM products WHERE trim(COALESCE(barcode,''))<>'';";
         }
         using (var period = db.CreateCommand())
         {
-            period.CommandText = @"INSERT INTO financial_periods(period_no,started_at,ended_at,summary_json)
-SELECT COALESCE(MAX(period_no),0)+1,$s,NULL,NULL FROM financial_periods
+            period.CommandText = @"INSERT OR IGNORE INTO financial_periods(period_no,started_at,ended_at,summary_json)
+SELECT COALESCE((SELECT MAX(period_no) FROM financial_periods),0)+1,$s,NULL,NULL
 WHERE NOT EXISTS(SELECT 1 FROM financial_periods WHERE ended_at IS NULL);";
             period.Parameters.AddWithValue("$s", DateTime.Now.ToString("O"));
             period.ExecuteNonQuery();

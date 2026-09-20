@@ -110,8 +110,8 @@ FROM invoice_items ii JOIN invoices i ON i.id=ii.invoice_id WHERE {profitWhere}"
 
     private static void EnsureOpenPeriod()
     {
-        using var db=Database.Open();using var c=db.CreateCommand();c.CommandText=@"INSERT INTO financial_periods(period_no,started_at,ended_at,summary_json)
-SELECT COALESCE(MAX(period_no),0)+1,$s,NULL,NULL FROM financial_periods
+        using var db=Database.Open();using var c=db.CreateCommand();c.CommandText=@"INSERT OR IGNORE INTO financial_periods(period_no,started_at,ended_at,summary_json)
+SELECT COALESCE((SELECT MAX(period_no) FROM financial_periods),0)+1,$s,NULL,NULL
 WHERE NOT EXISTS(SELECT 1 FROM financial_periods WHERE ended_at IS NULL);";c.Parameters.AddWithValue("$s",DateTime.Now.ToString("O"));c.ExecuteNonQuery();
     }
 
