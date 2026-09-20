@@ -1,0 +1,18 @@
+حسابداری آسان Native v4 — WebView Parity R1
+
+این شاخه بر اساس سورس نهایی WebView v3.4 بازسازی شده است.
+مرجع رنگ‌ها، فاصله‌ها، Sidebar، Topbar، کارت‌ها، Light/Dark و جریان صفحات: dist/app.css + dist/index.html + dist/app.js نسخه v3.4.
+
+تغییرات اصلی نسبت به Native اولیه:
+- پالت Light/Dark مستقیم از WebView v3.4
+- Sidebar راست، Topbar، جستجوی سراسری و کارت‌های Dashboard نزدیک به WebView
+- آیکن‌های Vector به جای علائم کیبوردی
+- RTL سراسری و چیدمان صفحات بر اساس UX نسخه WebView
+- بازطراحی فروش، کالاها، مشتری/شرکت، دسته‌ها، هزینه، گزارش، انبار، داده‌ها و تنظیمات
+- اضافه شدن دسته‌ها و Data Support به ناوبری مطابق WebView
+- حذف Binding خراب CustomerResults/IsCustomPreset از صفحه فروش
+- انیمیشن Fade کوتاه برای ورود صفحات و Hover/Press برای کنترل‌ها
+- Light/Dark زنده با ResourceDictionary
+- خروج با تایید و Backup ایمن قبل از بسته شدن
+
+نکته: Compile واقعی WPF باید روی Windows/GitHub Actions اجرا شود. Workflow پروژه Build، Publish، Startup smoke-test، Installer smoke-test و Artifact را انجام می‌دهد.
