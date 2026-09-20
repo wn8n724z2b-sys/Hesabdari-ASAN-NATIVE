@@ -6,18 +6,29 @@ namespace HesabdariAsan.Native.Services;
 
 public sealed class ProductService
 {
-    public PagedResult<Product> Search(string? query, int page, int pageSize)
+    public PagedResult<Product> Search(string? query, int page, int pageSize) => Search(query, "ALL", "ALL", page, pageSize);
+
+    public PagedResult<Product> Search(string? query, string category, string stockFilter, int page, int pageSize)
     {
         page = Math.Max(1, page); pageSize = pageSize is 10 or 20 or 50 ? pageSize : 10; query = (query ?? "").Trim();
-        var where = string.IsNullOrWhiteSpace(query) ? "WHERE is_active=1" : "WHERE is_active=1 AND (name LIKE $like OR barcode LIKE $like OR category LIKE $like)";
+        var filters = new List<string> { "is_active=1" };
+        if (!string.IsNullOrWhiteSpace(query)) filters.Add("(name LIKE $like OR barcode LIKE $like OR category LIKE $like)");
+        if (!string.IsNullOrWhiteSpace(category) && category != "ALL") filters.Add("category=$category");
+        if (stockFilter == "LOW") filters.Add("stock<=min_stock");
+        var where = "WHERE " + string.Join(" AND ", filters);
         using var db = Database.Open();
+        void AddFilters(Microsoft.Data.Sqlite.SqliteCommand cmd)
+        {
+            if (!string.IsNullOrWhiteSpace(query)) cmd.Parameters.AddWithValue("$like", $"%{query}%");
+            if (!string.IsNullOrWhiteSpace(category) && category != "ALL") cmd.Parameters.AddWithValue("$category", category);
+        }
         int total;
-        using (var count = db.CreateCommand()) { count.CommandText = $"SELECT COUNT(*) FROM products {where}"; if (!string.IsNullOrWhiteSpace(query)) count.Parameters.AddWithValue("$like", $"%{query}%"); total = Convert.ToInt32(count.ExecuteScalar() ?? 0); }
+        using (var count = db.CreateCommand()) { count.CommandText = $"SELECT COUNT(*) FROM products {where}"; AddFilters(count); total = Convert.ToInt32(count.ExecuteScalar() ?? 0); }
         var items = new List<Product>();
         using (var cmd = db.CreateCommand())
         {
             cmd.CommandText = $@"SELECT id,name,COALESCE(barcode,''),category,unit,purchase_price,sale_price,stock,min_stock,is_active FROM products {where} ORDER BY id DESC LIMIT $limit OFFSET $offset";
-            if (!string.IsNullOrWhiteSpace(query)) cmd.Parameters.AddWithValue("$like", $"%{query}%"); cmd.Parameters.AddWithValue("$limit", pageSize); cmd.Parameters.AddWithValue("$offset", (page - 1) * pageSize);
+            AddFilters(cmd); cmd.Parameters.AddWithValue("$limit", pageSize); cmd.Parameters.AddWithValue("$offset", (page - 1) * pageSize);
             using var r = cmd.ExecuteReader(); var i = 0;
             while (r.Read()) items.Add(new Product { Id=r.GetInt64(0), RowNumber=(page-1)*pageSize+ ++i, Name=r.GetString(1), Barcode=r.GetString(2), Category=r.GetString(3), Unit=r.GetString(4), PurchasePrice=r.GetInt64(5), SalePrice=r.GetInt64(6), Stock=r.GetDouble(7), MinStock=r.GetDouble(8), IsActive=r.GetInt64(9)==1 });
         }

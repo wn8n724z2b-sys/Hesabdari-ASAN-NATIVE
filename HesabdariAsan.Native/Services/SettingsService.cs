@@ -37,9 +37,11 @@ ON CONFLICT(key) DO UPDATE SET value=excluded.value";
             ShopPhone = Get("shop_phone", ""),
             ShopAddress = Get("shop_address", ""),
             ShopLogoPath = Get("shop_logo", ""),
+            ReceiptFooter = Get("receipt_footer", "سپاس از خرید شما"),
             PrinterName = Get("printer_name", ""),
             PrintAfterSale = Get("print_after_sale", "0") == "1",
-            BarcodeScannerEnabled = Get("barcode_scanner_enabled", "1") != "0"
+            BarcodeScannerEnabled = Get("barcode_scanner_enabled", "1") != "0",
+            ScannerSuffix = Get("scanner_suffix", "Enter")
         };
         if (double.TryParse(Get("ui_scale", "1"), System.Globalization.NumberStyles.Any,
                 System.Globalization.CultureInfo.InvariantCulture, out var scale))
@@ -67,11 +69,13 @@ ON CONFLICT(key) DO UPDATE SET value=excluded.value";
         Upsert("shop_phone", s.ShopPhone);
         Upsert("shop_address", s.ShopAddress);
         Upsert("shop_logo", s.ShopLogoPath);
+        Upsert("receipt_footer", s.ReceiptFooter);
         Upsert("auto_backup_per_day", Math.Clamp(s.AutoBackupPerDay, 1, 6).ToString());
         Upsert("printer_name", s.PrinterName);
         Upsert("print_after_sale", s.PrintAfterSale ? "1" : "0");
         Upsert("barcode_scanner_enabled", s.BarcodeScannerEnabled ? "1" : "0");
-        AuditService.Write(db, tx, "SETTINGS_SAVE", "SETTINGS", "main", JsonSerializer.Serialize(new { s.Theme, s.UiScale, s.ManagerName, s.ShopName, s.AutoBackupPerDay, s.PrinterName, s.PrintAfterSale, s.BarcodeScannerEnabled }));
+        Upsert("scanner_suffix", s.ScannerSuffix is "Tab" ? "Tab" : "Enter");
+        AuditService.Write(db, tx, "SETTINGS_SAVE", "SETTINGS", "main", JsonSerializer.Serialize(new { s.Theme, s.UiScale, s.ManagerName, s.ShopName, s.AutoBackupPerDay, s.PrinterName, s.PrintAfterSale, s.BarcodeScannerEnabled, s.ScannerSuffix }));
         tx.Commit();
     }
 }

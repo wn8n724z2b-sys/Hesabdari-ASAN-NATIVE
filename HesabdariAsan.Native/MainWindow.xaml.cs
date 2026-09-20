@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Threading;
 using HesabdariAsan.Native.Services;
@@ -11,10 +12,15 @@ public partial class MainWindow : Window
     private readonly DispatcherTimer _pulseTimer = new() { Interval = TimeSpan.FromSeconds(30) };
     private readonly DispatcherTimer _backupTimer = new() { Interval = TimeSpan.FromHours(1) };
     private readonly AutoBackupService _autoBackup = new();
+    private readonly BackupService _backup = new();
     private readonly WorkSessionService _workSession = new();
     private readonly RawInputBarcodeService _scanner = new();
     private readonly SettingsService _settings = new();
     private readonly MainViewModel _vm;
+    private bool _allowClose;
+
+    private static bool IsSmokeTest => string.Equals(
+        Environment.GetEnvironmentVariable("HESABDARI_SMOKE_TEST"), "1", StringComparison.Ordinal);
 
     public MainWindow()
     {
@@ -35,14 +41,63 @@ public partial class MainWindow : Window
             _backupTimer.Tick += (_, _) => _autoBackup.Check();
             _backupTimer.Start();
         };
-        Closing += (_, _) =>
+        Closing += OnClosing;
+        Closed += (_, _) => StopRuntimeServices();
+    }
+
+    private void OnClosing(object? sender, CancelEventArgs e)
+    {
+        if (_allowClose || IsSmokeTest) return;
+
+        var answer = MessageBox.Show(
+            "آیا می‌خواهید از حسابداری آسان خارج شوید؟\n\nقبل از خروج یک نسخه پشتیبان ایمن از دیتابیس ساخته می‌شود.",
+            "خروج از حسابداری آسان",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question,
+            MessageBoxResult.No,
+            MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign);
+
+        if (answer != MessageBoxResult.Yes)
         {
-            _scanner.Dispose();
-            _backupTimer.Stop();
-            _pulseTimer.Stop();
-            _clockTimer.Stop();
-            _workSession.Stop();
-        };
+            e.Cancel = true;
+            return;
+        }
+
+        try
+        {
+            _workSession.Pulse();
+            _backup.CreateBackup("exit");
+            _backup.KeepLatest(30);
+        }
+        catch (Exception ex)
+        {
+            AppLog.Error(ex, "ExitBackup");
+            var closeAnyway = MessageBox.Show(
+                "تهیه نسخه پشتیبان هنگام خروج با خطا روبه‌رو شد.\n\n" + ex.Message +
+                "\n\nآیا با این حال برنامه بسته شود؟",
+                "خطای پشتیبان‌گیری",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning,
+                MessageBoxResult.No,
+                MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign);
+            if (closeAnyway != MessageBoxResult.Yes)
+            {
+                e.Cancel = true;
+                return;
+            }
+        }
+
+        _allowClose = true;
+        StopRuntimeServices();
+    }
+
+    private void StopRuntimeServices()
+    {
+        _scanner.Dispose();
+        _backupTimer.Stop();
+        _pulseTimer.Stop();
+        _clockTimer.Stop();
+        _workSession.Stop();
     }
 
     private void AttachScanner()

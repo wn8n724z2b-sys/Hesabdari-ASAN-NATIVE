@@ -24,6 +24,7 @@ public sealed class SettingsViewModel : ViewModelBase
     public string ShopPhone{get=>_settings.ShopPhone;set{_settings.ShopPhone=value;OnPropertyChanged();}}
     public string ShopAddress{get=>_settings.ShopAddress;set{_settings.ShopAddress=value;OnPropertyChanged();}}
     public string ShopLogoPath{get=>_settings.ShopLogoPath;set{_settings.ShopLogoPath=value;OnPropertyChanged();}}
+    public string ReceiptFooter{get=>_settings.ReceiptFooter;set{_settings.ReceiptFooter=value;OnPropertyChanged();}}
     public double UiScale{get=>_settings.UiScale;set{_settings.UiScale=Math.Clamp(value,1,2);OnPropertyChanged();OnPropertyChanged(nameof(UiScaleText));FontScaleService.Apply(_settings.UiScale);}}
     public string UiScaleText=>$"{UiScale*100:0}%";
     public int AutoBackupPerDay{get=>_settings.AutoBackupPerDay;set{_settings.AutoBackupPerDay=Math.Clamp(value,1,6);OnPropertyChanged();}}
@@ -32,6 +33,8 @@ public sealed class SettingsViewModel : ViewModelBase
     public string PrinterText=>string.IsNullOrWhiteSpace(PrinterName)?"پرینتر انتخاب نشده":PrinterName;
     public bool PrintAfterSale{get=>_settings.PrintAfterSale;set{_settings.PrintAfterSale=value;OnPropertyChanged();}}
     public bool BarcodeScannerEnabled{get=>_settings.BarcodeScannerEnabled;set{_settings.BarcodeScannerEnabled=value;OnPropertyChanged();}}
+    public IReadOnlyList<string> ScannerSuffixOptions{get;}=new[]{"Enter","Tab"};
+    public string ScannerSuffix{get=>_settings.ScannerSuffix;set{_settings.ScannerSuffix=value=="Tab"?"Tab":"Enter";OnPropertyChanged();}}
     public string Status{get=>_status;private set=>Set(ref _status,value);}
 
     public RelayCommand SaveCommand{get;}

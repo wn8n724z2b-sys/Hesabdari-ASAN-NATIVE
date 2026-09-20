@@ -125,7 +125,7 @@ public sealed class ReceiptPrinterService
         doc.Blocks.Add(P($"جمع: {invoice.Subtotal:N0} ؋", 11, FontWeights.SemiBold));
         if (invoice.Discount > 0) doc.Blocks.Add(P($"تخفیف: {invoice.Discount:N0} ؋", 11));
         doc.Blocks.Add(P($"قابل پرداخت: {invoice.Total:N0} ؋", 15, FontWeights.Bold));
-        doc.Blocks.Add(P("سپاس از خرید شما", 10, null, TextAlignment.Center));
+        doc.Blocks.Add(P(string.IsNullOrWhiteSpace(settings.ReceiptFooter) ? "سپاس از خرید شما" : settings.ReceiptFooter, 10, null, TextAlignment.Center));
         doc.Blocks.Add(P("حسابداری آسان · MNRAHIMI . Ltd", 8, null, TextAlignment.Center));
         return doc;
     }

@@ -1,17 +1,31 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <SolidColorBrush x:Key="AppBackground" Color="#F6F8FC" />
-    <SolidColorBrush x:Key="Sidebar" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="Surface" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="SoftSurface" Color="#F3F6FA" />
-    <SolidColorBrush x:Key="HoverSurface" Color="#EEF4FF" />
-    <SolidColorBrush x:Key="Border" Color="#E3E8F0" />
-    <SolidColorBrush x:Key="TextPrimary" Color="#111827" />
-    <SolidColorBrush x:Key="Muted" Color="#6B7280" />
-    <SolidColorBrush x:Key="Accent" Color="#2563EB" />
-    <SolidColorBrush x:Key="AccentSoft" Color="#EAF1FF" />
-    <SolidColorBrush x:Key="Success" Color="#059669" />
-    <SolidColorBrush x:Key="Danger" Color="#DC2626" />
-    <SolidColorBrush x:Key="Warning" Color="#D97706" />
-    <SolidColorBrush x:Key="Overlay" Color="#AAFFFFFF" />
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Ported directly from WebView v3.4 :root tokens -->
+    <SolidColorBrush x:Key="AppBackground" Color="#F5F7F9"/>
+    <SolidColorBrush x:Key="Surface" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="SoftSurface" Color="#F8FAFC"/>
+    <SolidColorBrush x:Key="Sidebar" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="Border" Color="#E5E9EE"/>
+    <SolidColorBrush x:Key="Foreground" Color="#1F2B37"/>
+    <SolidColorBrush x:Key="Muted" Color="#71808F"/>
+    <SolidColorBrush x:Key="MutedStrong" Color="#526170"/>
+    <SolidColorBrush x:Key="TextPrimary" Color="#1F2B37"/>
+    <SolidColorBrush x:Key="HoverSurface" Color="#F2F6FA"/>
+    <SolidColorBrush x:Key="Hover" Color="#F2F6FA"/>
+    <SolidColorBrush x:Key="InputBackground" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="Accent" Color="#3390EC"/>
+    <SolidColorBrush x:Key="AccentHover" Color="#2B82D9"/>
+    <SolidColorBrush x:Key="AccentSoft" Color="#EAF4FF"/>
+    <SolidColorBrush x:Key="Success" Color="#2FA36B"/>
+    <SolidColorBrush x:Key="SuccessSoft" Color="#EBF8F1"/>
+    <SolidColorBrush x:Key="Danger" Color="#D95763"/>
+    <SolidColorBrush x:Key="DangerSoft" Color="#FFF0F2"/>
+    <SolidColorBrush x:Key="Warning" Color="#C98A1C"/>
+    <SolidColorBrush x:Key="WarningSoft" Color="#FFF7E6"/>
+    <SolidColorBrush x:Key="Purple" Color="#7657E8"/>
+    <SolidColorBrush x:Key="PurpleSoft" Color="#F3EFFF"/>
+    <SolidColorBrush x:Key="Cyan" Color="#23A7A1"/>
+    <SolidColorBrush x:Key="CyanSoft" Color="#EAFAFA"/>
+    <SolidColorBrush x:Key="Overlay" Color="#57132231"/>
+    <SolidColorBrush x:Key="Selection" Color="#DCEEFF"/>
+    <DropShadowEffect x:Key="CardShadow" Color="#1E3750" BlurRadius="18" ShadowDepth="3" Opacity="0.05"/>
 </ResourceDictionary>
